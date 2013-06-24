@@ -7,38 +7,118 @@
 		<script type="text/javascript" src="main.js"></script>
 	</head>
 	<body>
-		<div id="header" class="row">
-			<span id="current-date" class="title">current date</span>
-			<div id="fast-buttons" class="row filter">
-				<div class="button tumbler">
-					<span class="button-title">Today</span>
-				</div>
-				<div class="button tumbler">
-					<span class="button-title">Next week</span>
-				</div>
-				<div class="button tumbler">
-					<span class="button-title">All future</span>
-				</div>
-				<div class="button">
-					<span class="button-title">Completed</span>
-				</div>
-			</div>
-		</div>
-		<div id="body" class="row">
+		<div id="body" class="row">	
 			<div id="left-panel" class="column">
-				<!-- menu will be here -->
+				<header>
+	              <h1>Dates</h1>
+	            </header>
+				<ul id="dates" class="row">
+					<li class="tag">
+						<span class="tag-name">Today</span>
+						<span class="tag-counter">99</span>
+					</li>
+					<li class="tag">
+						<span class="tag-name">This week</span>
+						<span class="tag-counter">4</span>
+					</li>
+					<li class="tag">
+						<span class="tag-name">Next week</span>
+						<span class="tag-counter">0</span>
+					</li>										
+				</ul>
+				<header>
+	              <h1>Tags</h1>
+	            </header>
+				<ul id="tags" class="row">
+					<li class="tag">
+						<span class="tag-name">important</span>
+						<span class="tag-counter">99</span>
+					</li>
+					<li class="tag">
+						<span class="tag-name">missed</span>
+						<span class="tag-counter">4</span>
+					</li>
+					<li class="tag">
+						<span class="tag-name">work</span>
+						<span class="tag-counter">0</span>
+					</li>										
+				</ul>
 			</div>
 			<div id="center-panel" class="column">
-				<!-- main content is here -->
-				<ul id="tasks">
-					<li class="task">
-						<span class="task-title">CTI-панель</span>
-						<span class="task-body">Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)</span>
+				<header>
+	              <a class="prev" href="#">Prev</a>
+	              <a class="next" href="#">Next</a>
+	              <h1 id="date" class="date"><b>Mon</b> Jun 24 2013</h1>
+	            </header>
+				<ul id="tasks" class="row">
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и ...
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+					</li>										
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+					</li>	
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и ...
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
 					</li>
-					
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+					</li>											
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+					</li>
+					<li class="task" class="row">
+						<span class="task-title">
+							CTI-панель
+						</span>
+						<span class="task-body">
+							Выслать участникам на проработку и ...
+						</span>
+						<span class="task-fulltext">
+							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+						</span>
+					</li>
 				</ul>	
 			</div>
 		</div>
-		<div id="footer" class="row"></div>
 	</body>
 </html>
