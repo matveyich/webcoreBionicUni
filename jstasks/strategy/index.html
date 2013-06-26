@@ -4,53 +4,38 @@
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 		<title>javascript strategy pattern matvienko</title>
 		<script type="text/javascript">
-				var Character = function(){
-					this.move = function() {};
-					this.changeMovementType = function() {};
+				function Robot(name, behaviour) {
+					this.name = name;					
+					this.behaviour = behaviour; // это свойство - стратегия
 				}
-
-
-				var Movement = function(func) {
-				  this.move = func;
+				Robot.prototype.move = function() {
+					alert("My name is " + this.name + ". " + this.behaviour.move());
 				};
 
-				Movement.prototype.execute = function() {
-				  this.move();
-				};
+				// конкретные реализации стратегии поведения
 
-				var running = new Movement(function() {
-				  console.log("Hey I'm running!");
-				});
-
-				var walking = new Movement(function() {
-				  console.log("Just walking along...");
-				});
-
-				function changeMovementType(movement) {
-				  this.movement = movement;
+				function AggressiveBehaviour() {
+					this.move = function(){
+						return "I'm moving aggressively!";
+					}
 				}
 
-				function move() {
-				  this.movement.execute();
+				function DefensiveBehaviour() {
+					this.move = function(){
+						return "I'm not moving, I'm defending.";
+					}
 				}
-			
-				// Create a hero and walk through a peaceful forest...
 
-				var hero = new Character();
-				hero.changeMovementType(walking);
-				hero.move();
+				function NormalBehaviour() {
+					this.move = function(){
+						return "I'm on a beach :)";
+					}
+				}
 
-				// ... OH NO MOTHERFUCKIN' DINOSAURS!!!
+				// создаем экземпляр агрессивного робота
 
-				hero.changeMovementType(running);
-				hero.move();
-
-				var robotlegs = new Movement(function() {
-				  console.log("Cruisin for oil...Look out humans!");
-				});
-
-				hero.changeMovementType(robotlegs);
-				hero.move();				
+				var r1 = new Robot("Chuck", new AggressiveBehaviour());
+				r1.move();
 		</script>
 	</head>
 	<body>
