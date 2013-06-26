@@ -4,7 +4,53 @@
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 		<title>javascript strategy pattern matvienko</title>
 		<script type="text/javascript">
+				var Character = function(){
+					this.move = function() {};
+					this.changeMovementType = function() {};
+				}
+
+
+				var Movement = function(func) {
+				  this.move = func;
+				};
+
+				Movement.prototype.execute = function() {
+				  this.move();
+				};
+
+				var running = new Movement(function() {
+				  console.log("Hey I'm running!");
+				});
+
+				var walking = new Movement(function() {
+				  console.log("Just walking along...");
+				});
+
+				function changeMovementType(movement) {
+				  this.movement = movement;
+				}
+
+				function move() {
+				  this.movement.execute();
+				}
 			
+				// Create a hero and walk through a peaceful forest...
+
+				var hero = new Character();
+				hero.changeMovementType(walking);
+				hero.move();
+
+				// ... OH NO MOTHERFUCKIN' DINOSAURS!!!
+
+				hero.changeMovementType(running);
+				hero.move();
+
+				var robotlegs = new Movement(function() {
+				  console.log("Cruisin for oil...Look out humans!");
+				});
+
+				hero.changeMovementType(robotlegs);
+				hero.move();				
 		</script>
 	</head>
 	<body>
