@@ -2,47 +2,55 @@
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-		<title>taskManger matvienko</title>
+		<title>taskManager matvienko</title>
 		<link rel="stylesheet" type="text/css" href="main.css">
 		<script type="text/javascript" src="main.js"></script>
 	</head>
 	<body>
 		<div id="body" class="row">	
 			<div id="left-panel" class="column">
-				<header>
-	              <h1>Dates</h1>
-	            </header>
-				<ul id="dates" class="row">
-					<li class="tag">
-						<span class="tag-name">Today</span>
-						<span class="tag-counter">99</span>
-					</li>
-					<li class="tag">
-						<span class="tag-name">This week</span>
-						<span class="tag-counter">4</span>
-					</li>
-					<li class="tag">
-						<span class="tag-name">Next week</span>
-						<span class="tag-counter">0</span>
-					</li>										
-				</ul>
-				<header>
-	              <h1>Tags</h1>
-	            </header>
-				<ul id="tags" class="row">
-					<li class="tag">
-						<span class="tag-name">important</span>
-						<span class="tag-counter">99</span>
-					</li>
-					<li class="tag">
-						<span class="tag-name">missed</span>
-						<span class="tag-counter">4</span>
-					</li>
-					<li class="tag">
-						<span class="tag-name">work</span>
-						<span class="tag-counter">0</span>
-					</li>										
-				</ul>
+				<div>
+					<header>
+		              <h1>Dates</h1>
+		            </header>
+					<ul id="dates" class="row">
+						<li class="tag">
+							<span class="tag-name">Today</span>
+							<span class="tag-counter">5</span>
+						</li>
+						<li class="tag">
+							<span class="tag-name">Next week</span>
+							<span class="tag-counter">4</span>
+						</li>
+						<li class="tag">
+							<span class="tag-name">Last week</span>
+							<span class="tag-counter">0</span>
+						</li>										
+					</ul>
+				</div>
+				<div>
+					<header>
+		              <h1>Tags</h1>
+		            </header>
+					<ul id="tags" class="row">
+						<li class="tag">
+							<span class="tag-name">Important</span>
+							<span class="tag-counter">9</span>
+						</li>
+						<li class="tag">
+							<span class="tag-name">Finished</span>
+							<span class="tag-counter">4</span>
+						</li>
+						<li class="tag">
+							<span class="tag-name">In progress</span>
+							<span class="tag-counter">2</span>
+						</li>										
+						<li class="tag">
+							<span class="tag-name">Not started</span>
+							<span class="tag-counter">5</span>
+						</li>										
+					</ul>
+				</div>
 			</div>
 			<div id="center-panel" class="column">
 				<header>
@@ -51,20 +59,31 @@
 	              <h1 id="date" class="date"><b>Mon</b> Jun 24 2013</h1>
 	            </header>
 				<ul id="tasks" class="row">
-					<li class="task" class="row">
+					<li class="task new-task" class="row">
 						<span class="task-title">
-							CTI-панель
+							Add new
+						</span>
+					</li>
+					<li class="task" class="row" tags="Important">
+						<span class="task-title">
+							Строка управления
+							<span class="due-date">24.06.2013</span>
 						</span>
 						<span class="task-body">
-							Выслать участникам на проработку и ...
+							Рассмотреть use-cases работы элемента в контексте бизнес процессов<br>
+							Для команды "Действия" - указывать названия действий<br>
+							Проработать UX работы с элементом при вводе и подсказках команд
 						</span>
 						<span class="task-fulltext">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Рассмотреть use-cases работы элемента в контексте бизнес процессов<br>
+							Для команды "Действия" - указывать названия действий<br>
+							Проработать UX работы с элементом при вводе и подсказках команд
 						</span>
 					</li>										
-					<li class="task" class="row">
+					<li class="task" class="row" tags="In-progress">
 						<span class="task-title">
 							CTI-панель
+							<span class="due-date">24.06.2013</span>
 						</span>
 						<span class="task-body">
 							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
@@ -73,50 +92,46 @@
 							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
 						</span>
 					</li>	
-					<li class="task" class="row">
+					<li class="task" class="row" tags="Finished">
 						<span class="task-title">
-							CTI-панель
+							Интеграция с Google analytics
+							<span class="due-date">24.06.2013</span>
 						</span>
 						<span class="task-body">
-							Выслать участникам на проработку и ...
+							Проработать концепцию генерации лидов с внешних источников, анализ возможностей api
 						</span>
 						<span class="task-fulltext">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Проработать концепцию генерации лидов с внешних источников, анализ возможностей api
 						</span>
 					</li>
-					<li class="task" class="row">
+					<li class="task" class="row" tags="Important">
 						<span class="task-title">
-							CTI-панель
+							Facebook integration
+							<span class="due-date">24.06.2013</span>
 						</span>
 						<span class="task-body">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Проработать архитектуру ESB<br>
+							Подготовить интерфейсы и API интеграции с Facebook
 						</span>
 						<span class="task-fulltext">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Проработать архитектуру ESB<br>
+							Подготовить интерфейсы и API интеграции с Facebook
 						</span>
-					</li>											
-					<li class="task" class="row">
+					</li>		
+					<li class="task" class="row" tags="Not-started">
 						<span class="task-title">
-							CTI-панель
+							Подготовить отчет
+							<span class="due-date">24.06.2013</span>
 						</span>
 						<span class="task-body">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Отчет по продажам за последний месяц<br>
+							Сводные таблицы
 						</span>
 						<span class="task-fulltext">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
+							Отчет по продажам за последний месяц<br>
+							Сводные таблицы
 						</span>
-					</li>
-					<li class="task" class="row">
-						<span class="task-title">
-							CTI-панель
-						</span>
-						<span class="task-body">
-							Выслать участникам на проработку и ...
-						</span>
-						<span class="task-fulltext">
-							Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)
-						</span>
-					</li>
+					</li>															
 				</ul>	
 			</div>
 		</div>

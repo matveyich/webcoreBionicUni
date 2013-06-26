@@ -10,7 +10,6 @@ body {
 }
 
 header {
-  position: relative;
   text-align: center;
 }
 header .date, header h1 {
@@ -42,23 +41,31 @@ header a:hover {
   color: #edb330;
 }
 header a.prev {
-  left: 0;
+	float: left;
+	position: relative;
+	left: 0rem;
+
 }
 header a.next {
-  right: 0;
+	float: right;
+	position: relative;
+	right: 0rem;
 }
 
 #left-panel {
 	width: 15%;
+	min-width: 10rem;
 }
 
 #center-panel {
 	padding-left: 1rem;
 	width: 80%;
+	min-width: 10rem;
 }
 
 .column {
 	float: left;
+	display: inline-block;
 }
 
 .row {
@@ -78,11 +85,14 @@ header a.next {
 	float: none;
 	clear: both;
 	width: 100%;
-	cursor: pointer;
 	display: inline-block;
+	border-radius: 0.2rem;
+	padding-top: 0.3rem;
+	padding-bottom: 0.3rem;
 }
-.tag :hover {
-	text-decoration: underline;
+.tag:hover {
+	background-color: #dedede;
+	cursor: pointer;
 }
 
 .tag-name {
@@ -95,7 +105,9 @@ header a.next {
 	float: right;
 	margin-left: 0.2rem;
 	margin-right: 0.2rem;
-	padding: 0.1rem;
+	padding: 0.3rem;
+	padding-left: 0.6rem;
+	padding-right: 0.6rem;
 	border-radius: 0.9rem;
 }
 
@@ -105,7 +117,7 @@ header a.next {
 }
 
 #dates .tag-counter {
-	background-color: rgb(182, 33, 240);	
+	background-color: rgb(240, 124, 33);
 	color: white;
 }
 
@@ -127,11 +139,28 @@ header a.next {
 
 .task-title {
 	clear: both;
+	line-height: 2rem;
 	float: none;
 	font-weight: bold;
-	font-size: 1.1rem;
+	font-size: 1.2rem;
 	text-align: center;
 	display: block;
+	border-bottom: 1px solid #dedede;
+}
+
+.new-task {
+	background-color: rgb(240, 124, 33);
+	color: white;
+}
+
+.new-task:hover {
+	cursor: pointer;
+}
+
+.due-date {
+	font-weight: normal;
+	float: right;
+	font-size: 0.8rem;
 }
 
 .task-fulltext {
@@ -141,5 +170,8 @@ header a.next {
 .task-body, .task-fulltext {
 	clear: both;
 	float: none;
+	padding-top: 0.9rem;
+	padding-left: 0.2rem;
+	padding-right: 0.2rem;
+	padding-bottom: 0.3rem;
 }
-
