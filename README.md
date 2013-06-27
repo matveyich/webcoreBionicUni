@@ -4,8 +4,5 @@ webcoreBionicUni
 webcoreBionicUni
 
 
-На 27 
-TaskManager:
-  1. Верстка макета на дивах гридами
-js:
-  1. strategy pattern in javascript
+На 1.07:
+1. генерация макета средствами js из набора объектов tasks
