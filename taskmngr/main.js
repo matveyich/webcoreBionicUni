@@ -13,28 +13,49 @@ function clearTasksInDOM() {
 
 function fillTasksInDOM(tasksData) {
 	var allTasksElement = document.getElementById("tasks");
+	for (var i = 0; i < tasksData.length; i++) {
+		pushOneTaskToDOM(tasksData[i], allTasksElement);
+	};
 }
 
 function pushOneTaskToDOM(taskElementData, allTasksElement) {
-/*						<li class="task" class="row" tags="Important">
-						<span class="task-title">
-							Строка управления
-							<span class="due-date">24.06.2013</span>
-						</span>
-						<span class="task-body">
-							Рассмотреть use-cases работы элемента в контексте бизнес процессов<br>
-							Для команды "Действия" - указывать названия действий<br>
-							Проработать UX работы с элементом при вводе и подсказках команд
-						</span>
-						<span class="task-fulltext">
-							Рассмотреть use-cases работы элемента в контексте бизнес процессов<br>
-							Для команды "Действия" - указывать названия действий<br>
-							Проработать UX работы с элементом при вводе и подсказках команд
-						</span>
-					</li>*/
+	// template generation
+
 	var taskElement = document.createElement("li");
-	taskElement.className="task";
-	taskElement.className="row";
+	taskElement.className="task row";
+
+	var taskTitle = document.createElement("span") ;
+	taskTitle.className = "task-title";
+
+	var dueDate = document.createElement("span") ;
+	dueDate.className = "due-date";
+
+	var taskBody = document.createElement("span");
+	taskBody.className="task-body";
+
+	var taskFullText = document.createElement("span");
+	taskFullText.className="task-fulltext";	
+
+	// fill elements with data
+
+	for (var i = 0; i < taskElementData.tags.length; i++){
+		taskElement.setAttribute("tags", taskElementData.tags[i]);
+	}
+	
+	taskTitle.innerHTML = taskElementData.title;
+	dueDate.innerHTML = taskElementData.dueDate;
+	
+	taskBody.innerHTML = taskElementData.taskBody;
+	taskFullText.innerHTML = taskElementData.taskFullText;
+
+	// cunstruct structure of task element
+	taskTitle.appendChild(dueDate);
+	taskElement.appendChild(taskTitle);
+	taskElement.appendChild(taskBody);
+	taskElement.appendChild(taskFullText);
+
+	// push task element to parent
+	allTasksElement.appendChild(taskElement);
 }
 
 function getTasks() {
@@ -81,6 +102,6 @@ function getTasks() {
 
 window.onload = function() {
 	setCurrentDateInDOM();
-	clearTasksInDOM();
+	clearTasksInDOM(); // чистим все записи в элементе tasks
 	fillTasksInDOM(getTasks());
 }
