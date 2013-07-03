@@ -9,57 +9,6 @@ function clearTasksInDOM() {
 	tasks.empty();
 }
 
-function fillTasksInDOM(tasksData) {
-	var allTasksElement = document.getElementById("tasks");
-	for (var i = 0; i < tasksData.length; i++) {
-		pushOneTaskToDOM(tasksData[i], allTasksElement);
-	};
-}
-
-function pushOneTaskToDOM(taskElementData, allTasksElement) {
-	// template generation
-
-	var taskElement = document.createElement("li");
-	taskElement.className="task row";
-
-	var taskTitle = document.createElement("span") ;
-	taskTitle.className = "task-title";
-
-	var dueDate = document.createElement("span") ;
-	dueDate.className = "due-date";
-
-	var taskBody = document.createElement("span");
-	taskBody.className="task-body";
-
-	var taskFullText = document.createElement("span");
-	taskFullText.className="task-fulltext";	
-
-	// fill elements with data
-
-	var taskLink = taskElementData.link;
-
-	for (var i = 0; i < taskElementData.tags.length; i++){
-		taskElement.setAttribute("tags", taskElementData.tags[i]);
-	}
-	taskElement.setAttribute("Id", "task-" + taskElementData.Id);
-	
-	taskTitle.setAttribute("link", taskLink);
-	taskTitle.innerHTML = taskElementData.title;
-	dueDate.innerHTML = taskElementData.dueDate;
-	
-	taskBody.innerHTML = taskElementData.taskBody;
-	taskFullText.innerHTML = taskElementData.taskFullText;
-
-	// cunstruct structure of task element
-	taskTitle.appendChild(dueDate);
-	taskElement.appendChild(taskTitle);
-	taskElement.appendChild(taskBody);
-	taskElement.appendChild(taskFullText);
-
-	// push task element to parent
-	allTasksElement.appendChild(taskElement);
-}
-
 function getTasks() {
 	var tasksData = [
 	{
@@ -115,7 +64,7 @@ function getTasks() {
 function jqFillTasksInDOM(tasksData) {
 	var allTasksElement = $("#tasks");
 	for (var i = 0; i < tasksData.length; i++) {
-		pushOneTaskToDOM(tasksData[i], allTasksElement);
+		jqPushOneTaskToDOM(tasksData[i], allTasksElement);
 	};
 }
 
@@ -143,28 +92,47 @@ function jqPushOneTaskToDOM(taskElementData, allTasksElement) {
 	
 	taskElement.attr("tags", taskElementData.tags + '');
 
-	taskElement.attr("Id", "task-" + taskElementData.Id);
+	taskElement.attr("Id", taskElementData.Id);
 	
 	taskTitle.attr("link", taskLink);
 	
-	taskTitle.innerHTML = taskElementData.title;
-	dueDate.innerHTML = taskElementData.dueDate;
+	taskTitle.html(taskElementData.title);
+	dueDate.html(taskElementData.dueDate);
 	
-	taskBody.innerHTML = taskElementData.taskBody;
-	taskFullText.innerHTML = taskElementData.taskFullText;
+	taskBody.html(taskElementData.taskBody);
+	taskFullText.html(taskElementData.taskFullText);
 
 	// cunstruct structure of task element
-	taskTitle.appendChild(dueDate);
-	taskElement.appendChild(taskTitle);
-	taskElement.appendChild(taskBody);
-	taskElement.appendChild(taskFullText);
+	taskTitle.append(dueDate);
+	taskElement.append(taskTitle);
+	taskElement.append(taskBody);
+	taskElement.append(taskFullText);
 
 	// push task element to parent
-	allTasksElement.appendChild(taskElement);
+	allTasksElement.append(taskElement);
+
+	addTaskTitleClickHandler(taskElement);
+}
+
+
+function enableTaskEdit(task) {
+	var okbtn = $('<input type=button value=ok>');
+	var cancelbtn = new taskCancelBtn();
+	$(task).append(okbtn);
+	$(task).append(cancelbtn);
+}
+
+function addTaskTitleClickHandler(task){
+	
+	$(task).find('.task-title').click(function(){
+		
+		enableTaskEdit(this.parent());
+		
+	});
 }
 
 window.onload = function() {
 	setCurrentDateInDOM();
 	clearTasksInDOM(); // чистим все записи в элементе tasks
-	//fillTasksInDOM(getTasks());
+	jqFillTasksInDOM(getTasks());
 }

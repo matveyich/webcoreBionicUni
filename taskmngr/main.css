@@ -145,6 +145,11 @@ header a.next {
 	text-align: center;
 	display: block;
 	border-bottom: 1px solid #dedede;
+	cursor: pointer;
+}
+
+.task-title .edit {
+	margin-left: 0.2rem;
 }
 
 .new-task {
@@ -173,4 +178,5 @@ header a.next {
 	padding-left: 0.2rem;
 	padding-right: 0.2rem;
 	padding-bottom: 0.3rem;
+	cursor: pointer;
 }
