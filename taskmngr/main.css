@@ -145,7 +145,6 @@ header a.next {
 	text-align: center;
 	display: block;
 	border-bottom: 1px solid #dedede;
-	cursor: pointer;
 }
 
 .task-title .edit {
@@ -167,6 +166,21 @@ header a.next {
 	font-size: 0.8rem;
 }
 
+.save-task-button, .cancel-task-button, .edit-task-button {
+    display: inline;
+    margin-left: 0.2rem;
+    cursor: pointer;
+    border-radius: 0.3rem;
+    background-color: #8b0000;
+    color: white;
+    padding: 0.1rem;
+}
+
+.save-task-button:hover, .cancel-task-button:hover, .edit-task-button:hover {
+    background-color: #ff4500;
+    color: white;
+}
+
 .task-fulltext {
 	display: none;
 }
@@ -179,4 +193,14 @@ header a.next {
 	padding-right: 0.2rem;
 	padding-bottom: 0.3rem;
 	cursor: pointer;
+}
+
+textarea.task-body {
+    width: 90%;
+    min-height: 2.2rem;
+}
+
+input.title-text {
+    width: 90%;
+    border: 1px solid;
 }
