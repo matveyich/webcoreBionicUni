@@ -14,6 +14,10 @@ function getTasks() {
 	return tasksData;
 }
 
+function saveTasks(tasks){
+    window.taskData = tasks;
+}
+
 function jqFillTasksInDOM(tasksData) {
 	var allTasksElement = $("#tasks");
 	for (var i = 0; i < tasksData.length; i++) {
@@ -62,7 +66,20 @@ function saveTask(saveEvent){
     var taskToBeSaved = $('#task-' + el.id);
     var newTaskTitle = taskToBeSaved.find('[name="task-title"]');
     var newTaskBody = taskToBeSaved.find('[name="task-body"]');
+    var newTaskLink = taskToBeSaved.find('.task-title').attr('link');
+    var newTaskDueDate = taskToBeSaved.find('.due-date');
+    var newTaskTags = taskToBeSaved.attr('tags').split(',');
 
+    var taskObj = {
+            Id: el.id,
+            title: newTaskTitle,
+            dueDate: newTaskDueDate,
+            tags: newTaskTags,
+            taskBody: newTaskBody,
+            link: newTaskLink
+    }
+    var newTasks = updateTasks(taskObj, getTasks());
+    console.log(newTasks);
 }
 
 function cancelTaskEdit(cancelEvent){
@@ -70,8 +87,16 @@ function cancelTaskEdit(cancelEvent){
     console.log(el);
 }
 
-function updateTaskObjectById(id, tasks, taskTitle, taskBody) {
+function updateTasks(taskObj, tasks) {
     
+    $.each(tasks, function(key, value){
+        if (value.Id == taskObj.Id) {
+            value = taskObj;
+            break;
+        }
+    });
+
+    return tasks;
 }
 
 function getTaskObjectById(id, tasks) {
@@ -154,7 +179,7 @@ window.onload = function() {
             Id: 1,
             title: "Строка управления",
             dueDate: "24.06.2013",
-            tags: ["Important"],
+            tags: ["Important", "Finished"],
             taskBody: "Рассмотреть use cases работы элемента в контексте бизнес процессов.",
             link: "http://google.com/?q=typeahead"
         },
