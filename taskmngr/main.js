@@ -59,12 +59,19 @@ function editTaskMode(clickedevent){
 
 function saveTask(saveEvent){
     var el = saveEvent.target;
+    var taskToBeSaved = $('#task-' + el.id);
+    var newTaskTitle = taskToBeSaved.find('[name="task-title"]');
+    var newTaskBody = taskToBeSaved.find('[name="task-body"]');
 
 }
 
 function cancelTaskEdit(cancelEvent){
     var el = cancelEvent.target;
+    console.log(el);
+}
 
+function updateTaskObjectById(id, tasks, taskTitle, taskBody) {
+    
 }
 
 function getTaskObjectById(id, tasks) {
@@ -149,7 +156,6 @@ window.onload = function() {
             dueDate: "24.06.2013",
             tags: ["Important"],
             taskBody: "Рассмотреть use cases работы элемента в контексте бизнес процессов.",
-            taskFullText: "Рассмотреть use cases работы элемента в контексте бизнес процессов.",
             link: "http://google.com/?q=typeahead"
         },
         {
@@ -158,7 +164,6 @@ window.onload = function() {
             dueDate: "24.06.2013",
             tags: ["In-progress"],
             taskBody: "Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)",
-            taskFullText: "Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)",
             link: "http://google.com/?q=cti integration with avaya aura"
         },
         {
@@ -167,7 +172,6 @@ window.onload = function() {
             dueDate: "24.06.2013",
             tags: ["Finished"],
             taskBody: "Проработать концепцию генерации лидов с внешних источников, анализ возможностей api",
-            taskFullText: "Проработать концепцию генерации лидов с внешних источников, анализ возможностей api",
             link: "http://google.com/?q=google analytics api"
         },
         {
@@ -176,7 +180,6 @@ window.onload = function() {
             dueDate: "24.06.2013",
             tags: ["Important"],
             taskBody: "Проработать архитектуру ESB<br>Подготовить интерфейсы и API интеграции с Facebook",
-            taskFullText: "Проработать архитектуру ESB<br>Подготовить интерфейсы и API интеграции с Facebook",
             link: "http://google.com/?q=facebook integration"
         },
         {
@@ -185,7 +188,6 @@ window.onload = function() {
             dueDate: "24.06.2013",
             tags: ["Not-started"],
             taskBody: "Отчет по продажам за последний месяц<br>Сводные таблицы",
-            taskFullText: "Отчет по продажам за последний месяц<br>Сводные таблицы",
             link: "http://google.com/?q=how to make up for report"
         }
     ];
