@@ -1,7 +1,8 @@
 function setCurrentDateInDOM() {
 	var dateContainer = window.document.getElementById("date");
 	var curDate = new Date();
-	dateContainer.innerHTML = curDate.getDate() + "/" + curDate.getMonth() + "/" + curDate.getFullYear();
+    var curMonth = curDate.getMonth() + 1;
+	dateContainer.innerHTML = curDate.getDate() + "/" + curMonth + "/" + curDate.getFullYear();
 }
 
 function clearTasksInDOM() {
@@ -10,22 +11,49 @@ function clearTasksInDOM() {
 }
 
 function getTasks() {
-    var tasksData = window.tasksData;
-	return tasksData;
+    var tasksData = [];
+    var taskFilter = window.taskFilter;
+
+    if (taskFilter.applyDatesFilter) {
+
+        var startDate = Date.parse(taskFilter.startDate);
+        var dueDate = Date.parse(taskFilter.dueDate);
+
+        $.each(window.tasksData, function(key, value){
+
+            if (Date.parse(value.dueDate).between(startDate, dueDate) == true) {
+
+                if (taskFilter.applyTagsFilter) {
+
+                    if ($.inArray(taskFilter.tags[0], value.tags) >= 0) {
+                        tasksData.push(value);
+                    }
+                } else tasksData.push(value);
+
+            }
+        });
+    } else tasksData = window.tasksData;
+
+    return tasksData;
 }
 
-function saveTasks(tasks){
-    window.taskData = tasks;
-}
-
-function jqFillTasksInDOM(tasksData) {
+function fillTasksInDOM(tasksData) {
 	var allTasksElement = $("#tasks");
 	for (var i = 0; i < tasksData.length; i++) {
-		jqPushOneTaskToDOM(tasksData[i], allTasksElement);
+        appendOneTaskToDOM(allTasksElement, createTaskDOMElement(tasksData[i]));
 	};
 }
 
-function editTaskMode(clickedevent){
+function appendOneTaskToDOM(allTasksElementDOM, taskDOMElement) {
+    // push task element to parent
+    allTasksElementDOM.append(taskDOMElement);
+}
+
+function setReadTaskMode(clickedevent){
+    var target = clickedevent.target;
+}
+
+function setEditTaskMode(clickedevent){
     var target = clickedevent.target;
     if ($(target).hasClass("edit-task-button")){
         var taskid = target.id;
@@ -48,8 +76,8 @@ function editTaskMode(clickedevent){
         cancelBtn.addClass("cancel-task-button");
         cancelBtn.attr("Id", taskid);
 
-        editableTask.find('.due-date').append(cancelBtn);
-        editableTask.find('.due-date').append(saveBtn);
+        editableTask.find('.due-date').after(cancelBtn);
+        editableTask.find('.due-date').after(saveBtn);
 
         saveBtn.click(function(saveEvent){
             saveTask(saveEvent);
@@ -64,10 +92,10 @@ function editTaskMode(clickedevent){
 function saveTask(saveEvent){
     var el = saveEvent.target;
     var taskToBeSaved = $('#task-' + el.id);
-    var newTaskTitle = taskToBeSaved.find('[name="task-title"]');
-    var newTaskBody = taskToBeSaved.find('[name="task-body"]');
+    var newTaskTitle = taskToBeSaved.find('[name="task-title"]')[0].value;
+    var newTaskBody = taskToBeSaved.find('[name="task-body"]')[0].value;
     var newTaskLink = taskToBeSaved.find('.task-title').attr('link');
-    var newTaskDueDate = taskToBeSaved.find('.due-date');
+    var newTaskDueDate = taskToBeSaved.find('.due-date')[0].innerText;
     var newTaskTags = taskToBeSaved.attr('tags').split(',');
 
     var taskObj = {
@@ -78,25 +106,28 @@ function saveTask(saveEvent){
             taskBody: newTaskBody,
             link: newTaskLink
     }
-    var newTasks = updateTasks(taskObj, getTasks());
-    console.log(newTasks);
+    updateAllTasksDataObject(taskObj);
+}
+
+function updateAllTasksDataObject(taskObj) {
+    var tasks = window.tasksData;
+    $.each(tasks, function(key, value){
+        if (value.Id == taskObj.Id) {
+            tasks[key] = taskObj;
+            return false;
+        }
+    });
+    window.tasksData = tasks;
+    updateTasksDOM();
 }
 
 function cancelTaskEdit(cancelEvent){
-    var el = cancelEvent.target;
-    console.log(el);
+    updateTasksDOM();
 }
 
-function updateTasks(taskObj, tasks) {
-    
-    $.each(tasks, function(key, value){
-        if (value.Id == taskObj.Id) {
-            value = taskObj;
-            break;
-        }
-    });
-
-    return tasks;
+function updateTasksDOM() {
+    clearTasksInDOM();
+    fillTasksInDOM(getTasks());
 }
 
 function getTaskObjectById(id, tasks) {
@@ -110,67 +141,141 @@ function getTaskObjectById(id, tasks) {
     return obj;
 }
 
-function jqPushOneTaskToDOM(taskElementData, allTasksElement) {
-	// template generation
+function fillDaeTagDates() {
+    $('#dates-today').attr('dueDate', getNormalDate(Date.today()));
+    $('#dates-today').attr('startDate', getNormalDate(Date.today()));
+    $('#dates-this-week').attr('dueDate', getNormalDate(Date.today().addWeeks(0).sun()));
+    $('#dates-this-week').attr('startDate', getNormalDate(Date.today().addWeeks(-1).mon()));
+    $('#dates-next-week').attr('dueDate', getNormalDate(Date.today().addWeeks(1).sun()));
+    $('#dates-next-week').attr('startDate', getNormalDate(Date.today().addWeeks(0).mon()));
+    $('#dates-last-week').attr('dueDate', getNormalDate(Date.today().addWeeks(-1).sun()));
+    $('#dates-last-week').attr('startDate', getNormalDate(Date.today().addWeeks(-2).mon()));
+}
 
-	var taskElement = $("<li>");
-	taskElement.addClass("task row");
+function createTaskDOMElement(taskElementData){
 
-	var taskTitle = $("<span>") ;
-	taskTitle.addClass("task-title");
+    // template generation
+
+    var taskElement = $("<li>");
+    taskElement.addClass("task row");
+
+    var taskTitle = $("<span>") ;
+    taskTitle.addClass("task-title");
 
     var titleText = $('<span></span>');
     titleText.addClass("title-text");
 
+    var dueDate = $("<span>") ;
+    dueDate.addClass("due-date");
 
-	var dueDate = $("<span>") ;
-	dueDate.addClass("due-date");
+    var taskBody = $("<span>");
+    taskBody.addClass("task-body");
 
-	var taskBody = $("<span>");
-	taskBody.addClass("task-body");
-
-	var taskFullText = $("<span>");
-	taskFullText.addClass("task-fulltext");
+    var taskFullText = $("<span>");
+    taskFullText.addClass("task-fulltext");
 
     var editBtn = $("<div>");
     editBtn.addClass("edit-task-button");
     editBtn.attr("Id", taskElementData.Id);
 
-	// fill elements with data
+    // fill elements with data
 
-	var taskLink = taskElementData.link;
-	
-	taskElement.attr("tags", taskElementData.tags + '');
+    var taskLink = taskElementData.link;
 
-	taskElement.attr("Id", 'task-' + taskElementData.Id);
-	
-	taskTitle.attr("link", taskLink);
+    var taskTags = $("<span>");
+    taskTags.addClass("task-tags");
+    taskTags.html(taskElementData.tags + '');
+
+    taskElement.attr("tags", taskElementData.tags + '');
+
+    taskElement.attr("Id", 'task-' + taskElementData.Id);
+
+    taskTitle.attr("link", taskLink);
 
     editBtn.on("click", function(e) {
-        editTaskMode(e);
+        setEditTaskMode(e);
     });
 
     titleText.html(taskElementData.title);
     taskTitle.html(titleText);
-	dueDate.html(taskElementData.dueDate);
+    dueDate.html(taskElementData.dueDate);
 
     editBtn.html("edit");
-    dueDate.append(editBtn);
 
     taskBody.html(taskElementData.taskBody);
-	taskFullText.html(taskElementData.taskFullText);
+    taskFullText.html(taskElementData.taskFullText);
 
-	// cunstruct structure of task element
-	taskTitle.append(dueDate);
-	taskElement.append(taskTitle);
-	taskElement.append(taskBody);
-	taskElement.append(taskFullText);
+    // cunstruct structure of task element
+    taskTitle.append(dueDate);
+    dueDate.after(editBtn);
+    taskElement.append(taskTitle);
+    taskElement.append(taskBody);
+    taskBody.after(taskTags);
 
-	// push task element to parent
-	allTasksElement.append(taskElement);
-
+    return taskElement;
 }
 
+function filter(){
+    this.tags = [];
+    this.startDate = '01.01.0001';
+    this.dueDate = '01.01.9999';
+    this.applyDatesFilter = true;
+    this.applyTagsFilter = false;
+
+    this.cleanFilter = function(){
+        this.tags = [];
+        this.startDate = '01.01.0001';
+        this.dueDate = '01.01.9999';
+        this.applyDatesFilter = true;
+        this.applyTagsFilter = false;
+    }
+}
+
+function clickTag(tag){
+    if (tag.hasClass('tag-selected')) {
+        tag.removeClass('tag-selected');
+        window.taskFilter.applyTagsFilter = false;
+        window.taskFilter.tags = [];
+    } else {
+        var tags = tag.attr('tags');
+        window.taskFilter.tags = tags.split(',');
+        window.taskFilter.applyTagsFilter = true;
+        tag.siblings().removeClass('tag-selected');
+        tag.addClass('tag-selected');
+    }
+}
+
+function clickDateTag(dateTag){
+    if (dateTag.hasClass('tag-selected')){
+        dateTag.removeClass('tag-selected');
+        window.taskFilter.startDate = '01.01.0001';
+        window.taskFilter.dueDate = '01.01.9999';
+    } else {
+        var startDate = dateTag.attr('startDate');
+        var dueDate = dateTag.attr('dueDate');
+        window.taskFilter.startDate = startDate;
+        window.taskFilter.dueDate = dueDate;
+        dateTag.siblings().removeClass('tag-selected');
+        dateTag.addClass('tag-selected');
+    }
+}
+
+
+function setTaskDateDummyData(daysOffSet){
+    var today = Date.today();
+    var today = today.addDays(daysOffSet);
+    return getNormalDate(today);
+}
+
+function getNormalDate(date){
+    return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+}
+
+function setDummyDates() {
+    $.each(window.tasksData, function(key, data) {
+        window.tasksData[key].dueDate = setTaskDateDummyData(Math.floor((Math.random()*10)-5));
+    });
+}
 
 window.onload = function() {
 
@@ -216,9 +321,23 @@ window.onload = function() {
             link: "http://google.com/?q=how to make up for report"
         }
     ];
+    setDummyDates();
+    fillDaeTagDates();
 
+    window.taskFilter = new filter();
+
+    $('#tags .tag').click(function(e) {
+        clickTag($(this));
+        clearTasksInDOM();
+        fillTasksInDOM(getTasks());
+    });
+    $('#dates .tag').click(function(e) {
+        clickDateTag($(this));
+        clearTasksInDOM();
+        fillTasksInDOM(getTasks());
+    });
 
 	setCurrentDateInDOM();
-	clearTasksInDOM(); // чистим все записи в элементе tasks
-	jqFillTasksInDOM(getTasks());
+	clearTasksInDOM();
+	fillTasksInDOM(getTasks());
 }

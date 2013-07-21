@@ -5,6 +5,7 @@
 		<title>taskManager matvienko</title>
 		<link rel="stylesheet" type="text/css" href="main.css">
 		<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="date.js"></script>
 		<script type="text/javascript" src="main.js"></script>
 	</head>
 	<body>
@@ -15,17 +16,21 @@
 		              <h1>Dates</h1>
 		            </header>
 					<ul id="dates" class="row">
-						<li class="tag">
+						<li id="dates-today"  class="tag" dueDate="" filterType="equals">
 							<span class="tag-name">Today</span>
-							<span class="tag-counter">5</span>
+							<span class="tag-counter"></span>
 						</li>
-						<li class="tag">
+                        <li id="dates-this-week"  class="tag" dueDate="" filterType="between">
+                            <span class="tag-name">This week</span>
+                            <span class="tag-counter"></span>
+                        </li>
+                        <li id="dates-next-week" class="tag" startDate="" dueDate="" filterType="between">
 							<span class="tag-name">Next week</span>
-							<span class="tag-counter">4</span>
+							<span class="tag-counter"></span>
 						</li>
-						<li class="tag">
+						<li id="dates-last-week" class="tag" startDate="" dueDate="" filterType="between">
 							<span class="tag-name">Last week</span>
-							<span class="tag-counter">0</span>
+							<span class="tag-counter"></span>
 						</li>										
 					</ul>
 				</div>
@@ -34,22 +39,22 @@
 		              <h1>Tags</h1>
 		            </header>
 					<ul id="tags" class="row">
-						<li class="tag">
+						<li class="tag" tags="Important">
 							<span class="tag-name">Important</span>
-							<span class="tag-counter">9</span>
+							<span class="tag-counter"></span>
 						</li>
-						<li class="tag">
+						<li class="tag" tags="Finished">
 							<span class="tag-name">Finished</span>
-							<span class="tag-counter">4</span>
+							<span class="tag-counter"></span>
 						</li>
-						<li class="tag">
+						<li class="tag" tags="In-progress">
 							<span class="tag-name">In progress</span>
-							<span class="tag-counter">2</span>
-						</li>										
-						<li class="tag">
+							<span class="tag-counter"></span>
+						</li>
+						<li class="tag" tags="Not-started">
 							<span class="tag-name">Not started</span>
-							<span class="tag-counter">5</span>
-						</li>										
+							<span class="tag-counter"></span>
+						</li>
 					</ul>
 				</div>
 			</div>

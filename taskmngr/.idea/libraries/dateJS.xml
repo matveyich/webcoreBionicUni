@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="dateJS" type="javaScript">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/date.js" />
+    </CLASSES>
+    <DOCUMENTATION>
+      <root url="http://code.google.com/p/datejs/wiki/APIDocumentation" />
+    </DOCUMENTATION>
+    <SOURCES />
+  </library>
+</component>
