@@ -10,6 +10,14 @@ function clearTasksInDOM() {
 	tasks.empty();
 }
 
+function saveTasksToLocal(tasksObject){
+    store.set('tasksData', tasksObject);
+}
+
+function removeTasksFromLocal(){
+    store.remove('tasksData');
+}
+
 function getTasks() {
     var tasksData = [];
     var taskFilter = window.taskFilter;
@@ -118,6 +126,7 @@ function updateAllTasksDataObject(taskObj) {
         }
     });
     window.tasksData = tasks;
+    store.set('tasksData', tasks);
     updateTasksDOM();
 }
 
@@ -279,7 +288,9 @@ function setDummyDates() {
 
 window.onload = function() {
 
-    window.tasksData = [
+    var localTasksData = store.get('tasksData');
+    if (localTasksData == undefined) {
+        window.tasksData = [
         {
             Id: 1,
             title: "Строка управления",
@@ -321,8 +332,12 @@ window.onload = function() {
             link: "http://google.com/?q=how to make up for report"
         }
     ];
-    setDummyDates();
-    fillDaeTagDates();
+
+        setDummyDates();
+        fillDaeTagDates();
+        store.set('tasksData', window.tasksData);
+    } else window.tasksData = localTasksData;
+    
 
     window.taskFilter = new filter();
 
