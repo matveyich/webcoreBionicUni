@@ -57,10 +57,6 @@ function appendOneTaskToDOM(allTasksElementDOM, taskDOMElement) {
     allTasksElementDOM.append(taskDOMElement);
 }
 
-function setReadTaskMode(clickedevent){
-    var target = clickedevent.target;
-}
-
 function setEditTaskMode(clickedevent){
     var target = clickedevent.target;
     if ($(target).hasClass("edit-task-button")){
@@ -150,15 +146,53 @@ function getTaskObjectById(id, tasks) {
     return obj;
 }
 
-function fillDaeTagDates() {
-    $('#dates-today').attr('dueDate', getNormalDate(Date.today()));
-    $('#dates-today').attr('startDate', getNormalDate(Date.today()));
-    $('#dates-this-week').attr('dueDate', getNormalDate(Date.today().addWeeks(0).sun()));
-    $('#dates-this-week').attr('startDate', getNormalDate(Date.today().addWeeks(-1).mon()));
-    $('#dates-next-week').attr('dueDate', getNormalDate(Date.today().addWeeks(1).sun()));
-    $('#dates-next-week').attr('startDate', getNormalDate(Date.today().addWeeks(0).mon()));
-    $('#dates-last-week').attr('dueDate', getNormalDate(Date.today().addWeeks(-1).sun()));
-    $('#dates-last-week').attr('startDate', getNormalDate(Date.today().addWeeks(-2).mon()));
+function fillDateTagAttributes() {
+    var today = Date.today();
+
+    var thisWeekEnd = "";
+    var thisWeekStart = "";
+    var nextWeekEnd = "";
+    var nextWeekStart = "";
+    var lastWeekEnd = "";
+    var lastWeekStart = "";
+
+    if (Date.CultureInfo.firstDayOfWeek == 0) {
+        if (today.is().sun()) {
+            thisWeekStart = Date.today();
+        } else {
+            thisWeekStart = Date.today().prev().sun();
+        }
+    } else {
+        if (today.is().mon()) {
+            thisWeekStart = Date.today();
+        } else {
+            thisWeekStart = Date.today().prev().mon();
+        }
+    }
+
+    thisWeekEnd = thisWeekStart.toDateString();
+    thisWeekEnd = Date.parse(thisWeekEnd).addDays(6);
+
+    nextWeekEnd = thisWeekEnd.toDateString();
+    nextWeekEnd = Date.parse(nextWeekEnd).addDays(7);
+
+    nextWeekStart = thisWeekStart.toDateString();
+    nextWeekStart = Date.parse(nextWeekStart).addDays(7);
+
+    lastWeekEnd = thisWeekEnd.toDateString();
+    lastWeekEnd = Date.parse(lastWeekEnd).addDays(-7);
+
+    lastWeekStart = thisWeekStart.toDateString();
+    lastWeekStart = Date.parse(lastWeekStart).addDays(-7);
+
+    $('#dates-today').attr('dueDate', getNormalDate(today));
+    $('#dates-today').attr('startDate', getNormalDate(today));
+    $('#dates-this-week').attr('dueDate', getNormalDate(thisWeekEnd));
+    $('#dates-this-week').attr('startDate', getNormalDate(thisWeekStart));
+    $('#dates-next-week').attr('dueDate', getNormalDate(nextWeekEnd));
+    $('#dates-next-week').attr('startDate', getNormalDate(nextWeekStart));
+    $('#dates-last-week').attr('dueDate', getNormalDate(lastWeekEnd));
+    $('#dates-last-week').attr('startDate', getNormalDate(lastWeekStart));
 }
 
 function createTaskDOMElement(taskElementData){
@@ -224,6 +258,84 @@ function createTaskDOMElement(taskElementData){
     return taskElement;
 }
 
+function taskUrl() {
+    var currentUrl = {
+        tags: [],
+        dates: {dueDate:'', startDate:''}
+    };
+    this.set = function(type, value) {
+        if (type == "tags"){
+            currentUrl.tags = value;
+        } else if(type == "dates") {
+            currentUrl.dates = value;
+        }
+
+        var url = '';
+        var urlArray = []
+
+        if (currentUrl.tags.length > 0) {
+            urlArray.push('tags');
+            urlArray.push(currentUrl.tags);
+        }
+        if (currentUrl.dates.dueDate.length > 0){
+            urlArray.push('dueDate');
+            urlArray.push(currentUrl.dates.dueDate);
+        }
+        if (currentUrl.dates.startDate.length > 0){
+            urlArray.push('startDate');
+            urlArray.push(currentUrl.dates.startDate);
+        }
+
+        url = '#/' + urlArray.join('/');
+
+        if (history.pushState) {
+            history.pushState(null, null, url);
+        } else {
+            location.href = url;
+        }
+    };
+    this.get = function(){
+        var route = location.hash;
+        var segments = route.split("/");
+        if(segments[0] == "#")
+        {
+            segments.splice(0,1);
+        }
+
+        $.each(segments, function(key, value){
+            if (value == "tags") {
+                currentUrl.tags.push(segments[key + 1]);
+            }
+            if (value == "dueDate") {
+                currentUrl.dates.dueDate = segments[key + 1];
+            }
+            if (value == "startDate") {
+                currentUrl.dates.startDate = segments[key + 1];
+            }
+        });
+        return currentUrl;
+    }
+}
+
+function activateUrl() {
+    var urlFilter = tu.get();
+    var filterDates = {dueDate:'', startDate:''};
+
+    if (urlFilter.tags.length > 0) {
+        taskFilter.setTags(urlFilter.tags);
+    }
+
+    if (urlFilter.dates.dueDate.length > 0) {
+            filterDates.dueDate = urlFilter.dates.dueDate;
+    } else {filterDates.dueDate = '01.01.9999';}
+
+    if (urlFilter.dates.startDate.length > 0) {
+        filterDates.startDate = urlFilter.dates.startDate;
+    } else {filterDates.startDate = '01.01.0001';}
+
+    taskFilter.setDates(filterDates);
+}
+
 function filter(){
     this.tags = [];
     this.startDate = '01.01.0001';
@@ -238,34 +350,48 @@ function filter(){
         this.applyDatesFilter = true;
         this.applyTagsFilter = false;
     }
+    this.setTags = function(tags) {
+
+        if (tags.length == 0) {
+            this.applyDatesFilter = false;
+        } else {
+            this.applyTagsFilter = true;
+            this.tags = tags;
+        }
+    }
+    this.setDates = function(dates){
+        this.dueDate = dates.dueDate;
+        this.startDate = dates.startDate;
+    }
 }
 
 function clickTag(tag){
     if (tag.hasClass('tag-selected')) {
         tag.removeClass('tag-selected');
-        window.taskFilter.applyTagsFilter = false;
-        window.taskFilter.tags = [];
+
+        tu.set('tags', []);
+        //window.taskFilter.setTags([]);
     } else {
         var tags = tag.attr('tags');
-        window.taskFilter.tags = tags.split(',');
-        window.taskFilter.applyTagsFilter = true;
         tag.siblings().removeClass('tag-selected');
         tag.addClass('tag-selected');
+        tu.set('tags', tags.split(','));
+        //window.taskFilter.setTags(tags.split(','));
     }
 }
 
 function clickDateTag(dateTag){
     if (dateTag.hasClass('tag-selected')){
         dateTag.removeClass('tag-selected');
-        window.taskFilter.startDate = '01.01.0001';
-        window.taskFilter.dueDate = '01.01.9999';
+        tu.set('dates', {dueDate: '', startDate: ''});
+        //window.taskFilter.setDates({dueDate: '01.01.9999', startDate: '01.01.0001'});
     } else {
         var startDate = dateTag.attr('startDate');
         var dueDate = dateTag.attr('dueDate');
-        window.taskFilter.startDate = startDate;
-        window.taskFilter.dueDate = dueDate;
         dateTag.siblings().removeClass('tag-selected');
         dateTag.addClass('tag-selected');
+        tu.set('dates', {dueDate: dueDate, startDate: startDate});
+        //window.taskFilter.setDates({dueDate: dueDate, startDate: startDate});
     }
 }
 
@@ -287,7 +413,7 @@ function setDummyDates() {
 }
 
 window.onload = function() {
-
+    setCurrentDateInDOM();
     var localTasksData = store.get('tasksData');
     if (localTasksData == undefined) {
         window.tasksData = [
@@ -334,25 +460,29 @@ window.onload = function() {
     ];
 
         setDummyDates();
-        fillDaeTagDates();
         store.set('tasksData', window.tasksData);
     } else window.tasksData = localTasksData;
-    
 
+    fillDateTagAttributes();
+
+    window.tu = new taskUrl();
     window.taskFilter = new filter();
+
+    activateUrl();
+
+	clearTasksInDOM();
+	fillTasksInDOM(getTasks());
 
     $('#tags .tag').click(function(e) {
         clickTag($(this));
-        clearTasksInDOM();
-        fillTasksInDOM(getTasks());
     });
     $('#dates .tag').click(function(e) {
         clickDateTag($(this));
-        clearTasksInDOM();
-        fillTasksInDOM(getTasks());
     });
 
-	setCurrentDateInDOM();
-	clearTasksInDOM();
-	fillTasksInDOM(getTasks());
+    window.onpopstate = function(event){
+        activateUrl();
+        clearTasksInDOM();
+        fillTasksInDOM(getTasks());
+    };
 }
