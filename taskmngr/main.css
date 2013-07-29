@@ -51,16 +51,38 @@ header a.next {
 	right: 0rem;
 }
 
-#left-panel {
-	width: 15%;
-	min-width: 10rem;
+@media screen and (max-width: 915px) {
+
+    #left-panel {
+	    display: none;
+        width: 15%;
+	    min-width: 10rem;
+    }
+    #center-panel {
+	    padding-left: 1rem;
+	    width: 95%;
+	    min-width: 10rem;
+    }
+
 }
 
-#center-panel {
-	padding-left: 1rem;
-	width: 80%;
-	min-width: 10rem;
+@media screen and (min-width: 915px) {
+
+    #left-panel {
+	    
+        width: 15%;
+	    min-width: 10rem;
+    }
+
+    #center-panel {
+	    padding-left: 1rem;
+	    width: 80%;
+	    min-width: 10rem;
+    }
+
 }
+
+
 
 .column {
 	float: left;
