@@ -289,7 +289,7 @@ function taskUrl() {
         url = '#/' + urlArray.join('/');
 
         if (history.pushState) {
-            history.pushState(null, null, url);
+            history.pushState(currentUrl, null, url);
         } else {
             location.href = url;
         }
@@ -412,6 +412,12 @@ function setDummyDates() {
     });
 }
 
+function renderPage() {
+    activateUrl();
+    clearTasksInDOM();
+    fillTasksInDOM(getTasks());
+}
+
 window.onload = function() {
     setCurrentDateInDOM();
     var localTasksData = store.get('tasksData');
@@ -468,10 +474,7 @@ window.onload = function() {
     window.tu = new taskUrl();
     window.taskFilter = new filter();
 
-    activateUrl();
-
-	clearTasksInDOM();
-	fillTasksInDOM(getTasks());
+    renderPage();
 
     $('#tags .tag').click(function(e) {
         clickTag($(this));
@@ -480,9 +483,7 @@ window.onload = function() {
         clickDateTag($(this));
     });
 
-    window.onpopstate = function(event){
-        activateUrl();
-        clearTasksInDOM();
-        fillTasksInDOM(getTasks());
+    window.onpopstate = function(){
+        renderPage();
     };
 }
