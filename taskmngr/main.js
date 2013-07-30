@@ -195,7 +195,7 @@ function fillDateTagAttributes() {
     $('#dates-last-week').attr('startDate', getNormalDate(lastWeekStart));
 }
 
-function createTaskDOMElement(taskElementData){
+function createTaskDOMElement(taskObject){
 
     // template generation
 
@@ -219,19 +219,19 @@ function createTaskDOMElement(taskElementData){
 
     var editBtn = $("<div>");
     editBtn.addClass("edit-task-button");
-    editBtn.attr("Id", taskElementData.Id);
+    editBtn.attr("Id", taskObject.Id);
 
     // fill elements with data
 
-    var taskLink = taskElementData.link;
+    var taskLink = taskObject.link;
 
     var taskTags = $("<span>");
     taskTags.addClass("task-tags");
-    taskTags.html(taskElementData.tags + '');
+    taskTags.html(taskObject.tags + '');
 
-    taskElement.attr("tags", taskElementData.tags + '');
+    taskElement.attr("tags", taskObject.tags + '');
 
-    taskElement.attr("Id", 'task-' + taskElementData.Id);
+    taskElement.attr("Id", 'task-' + taskObject.Id);
 
     taskTitle.attr("link", taskLink);
 
@@ -239,14 +239,14 @@ function createTaskDOMElement(taskElementData){
         setEditTaskMode(e);
     });
 
-    titleText.html(taskElementData.title);
+    titleText.html(taskObject.title);
     taskTitle.html(titleText);
-    dueDate.html(taskElementData.dueDate);
+    dueDate.html(taskObject.dueDate);
 
     editBtn.html("edit");
 
-    taskBody.html(taskElementData.taskBody);
-    taskFullText.html(taskElementData.taskFullText);
+    taskBody.html(taskObject.taskBody);
+    taskFullText.html(taskObject.taskFullText);
 
     // cunstruct structure of task element
     taskTitle.append(dueDate);

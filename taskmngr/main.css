@@ -54,13 +54,22 @@ header a.next {
 @media screen and (max-width: 915px) {
 
     #left-panel {
-	    display: none;
-        width: 15%;
-	    min-width: 10rem;
+	    display: block;
+        width: 4%;
     }
+
+        #left-panel .tag-name {
+        display: none;
+        }
+        #left-panel header {
+        display: none;
+        }
+        #left-panel .tag:hover {
+        
+        }
     #center-panel {
-	    padding-left: 1rem;
-	    width: 95%;
+        padding-left: 1rem;
+	    width: 90%;
 	    min-width: 10rem;
     }
 
@@ -92,7 +101,6 @@ header a.next {
 .row {
 	clear: both;
 	float: none;
-	width: 100%;
 }
 
 #tags, #dates {
@@ -161,6 +169,10 @@ header a.next {
 	box-shadow: 0 0.3rem 0 rgb(255, 223, 155);
 	display: block;
 }
+
+    .task hidden {
+        display: none;
+    }
 
 .task-title {
 	clear: both;
