@@ -403,7 +403,7 @@ function setTaskDateDummyData(daysOffSet){
 }
 
 function getNormalDate(date){
-    return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+    return date.getDate() + '.' + (date.getMnth() + 1) + '.' + date.getFullYear();
 }
 
 function setDummyDates() {

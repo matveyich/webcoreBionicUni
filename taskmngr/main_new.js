@@ -1,27 +1,46 @@
-﻿function Util() {
-    var tasksObjectName = '';
-    var allTasksDOMElement = $('#tasks');
+﻿var tm = {};
 
-    this.clearTasksInDOM = function () {
-        allTasksDOMElement.empty();
-    };
+tm.init = function(){
 
-    this.fillTasksInDOM = function (tasksObject){
-    };
-    this.appendOneTaskToDOM = function (taskObject, tasksDOMElement) {
-    };
-    this.setEditTaskMode = function (taskDOMElement) {
+    tm.Util.renderTasksDOMElement();
 
-    };
-    this.saveTaskEdit = function (taskDOMElement) {
-    };
-    this.cancelTaskEdit = function (taskDOMElement) {
-    };
+    var tagsMenu = new tm.TagsMenu();
+    var datesMenu = new tm.DatesMenu();
 
-    this.updateTasksDOM = function () {
-    };
+}
 
-    var renderOneTaskDOMElement = function (taskObject) {
+tm.Util = {
+    tasksObjectName: '',
+    allTasksDOMElement: function() {
+        return $('#tasks');
+    },
+
+    clearTasksInDOM: function () {
+        tm.Util.allTasksDOMElement().empty();
+    },
+
+    fillTasksInDOM: function (tasksObject){
+
+    },
+    appendOneTaskToDOM: function (taskObject, tasksDOMElement) {
+
+    },
+    setEditTaskMode: function (taskDOMElement) {
+
+    },
+
+    saveTaskEdit: function (taskDOMElement) {
+
+    },
+    cancelTaskEdit: function (taskDOMElement) {
+
+    },
+
+    updateTasksDOM: function () {
+
+    },
+
+    renderOneTaskDOMElement: function (taskObject) {
         // template generation
 
         var taskElement = $("<li>");
@@ -77,32 +96,34 @@
         taskBody.after(taskTags);
 
         return taskElement;
-    };
+    },
 
-    this.renderTasksDOMElement = function () {
-        var tasks = new Tasks();
+    renderTasksDOMElement: function () {
+        var tasks = new tm.Tasks();
 
         this.clearTasksInDOM();
 
         $.each(tasks.get(), function(key, value){
-            allTasksDOMElement.append(renderOneTaskDOMElement(value));
+            tm.Util.allTasksDOMElement().append(tm.Util.renderOneTaskDOMElement(value));
         });
-    };
+    },
 
-    this.clickTag = function (tagDOMElement) {
-    };
-    this.clickDate = function (dateDOMElement) {
-    };
+    getNormalDate: function(date){
+        return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+    }
 
 }
 
-function TagsMenu() {
+tm.TagsMenu = function() {
     var tagsDOMel = $('#tags');
+    var tagDOMel = '';
+
     var tags = '';
 
     var init = function () {
         tags = getTags();
         renderTags(tags);
+        tagDOMel = $('#tags .tag');
         clickTagSubscribe();
     };
 
@@ -172,7 +193,7 @@ function TagsMenu() {
     };
 
     var clickTagSubscribe = function(){
-        $('#tags .tag').on('click', function(e){
+        tagDOMel.on('click', function(e){
            clickTag($(this));
         });
     }
@@ -180,11 +201,66 @@ function TagsMenu() {
     init();
 }
 
-function DateMenu() {
-    
+tm.DatesMenu = function() {
+    var datesDOMel = $('#dates');
+    var datesTodayDOMel = $('#dates-today');
+    var datesThisWeekDOMel = $('#dates-this-week');
+    var datesNextWeekDOMel = $('#dates-next-week');
+    var datesLastWeekDOMel = $('#dates-last-week');
+
+    var init = function(){
+        var today = Date.today();
+        var thisWeekEnd = "";
+        var thisWeekStart = "";
+        var nextWeekEnd = "";
+        var nextWeekStart = "";
+        var lastWeekEnd = "";
+        var lastWeekStart = "";
+
+        if (Date.CultureInfo.firstDayOfWeek == 0) {
+            if (today.is().sun()) {
+                thisWeekStart = Date.today();
+            } else {
+                thisWeekStart = Date.today().prev().sun();
+            }
+        } else {
+            if (today.is().mon()) {
+                thisWeekStart = Date.today();
+            } else {
+                thisWeekStart = Date.today().prev().mon();
+            }
+        }
+
+        thisWeekEnd = thisWeekStart.toDateString();
+        thisWeekEnd = Date.parse(thisWeekEnd).addDays(6);
+
+        nextWeekEnd = thisWeekEnd.toDateString();
+        nextWeekEnd = Date.parse(nextWeekEnd).addDays(7);
+
+        nextWeekStart = thisWeekStart.toDateString();
+        nextWeekStart = Date.parse(nextWeekStart).addDays(7);
+
+        lastWeekEnd = thisWeekEnd.toDateString();
+        lastWeekEnd = Date.parse(lastWeekEnd).addDays(-7);
+
+        lastWeekStart = thisWeekStart.toDateString();
+        lastWeekStart = Date.parse(lastWeekStart).addDays(-7);
+
+        datesTodayDOMel.attr('dueDate', tm.Util.getNormalDate(today));
+        datesTodayDOMel.attr('startDate', tm.Util.getNormalDate(today));
+        datesThisWeekDOMel.attr('dueDate', tm.Util.getNormalDate(thisWeekEnd));
+        datesThisWeekDOMel.attr('startDate', tm.Util.getNormalDate(thisWeekStart));
+        datesNextWeekDOMel.attr('dueDate', tm.Util.getNormalDate(nextWeekEnd));
+        datesNextWeekDOMel.attr('startDate', tm.Util.getNormalDate(nextWeekStart));
+        datesLastWeekDOMel.attr('dueDate', tm.Util.getNormalDate(lastWeekEnd));
+        datesLastWeekDOMel.attr('startDate', tm.Util.getNormalDate(lastWeekStart));
+    };
+
+    init();
+
 }
 
-function TasksURL() {
+tm.TasksURL = function() {
     var currentURL = {};
 
     this.set = function () { };
@@ -193,7 +269,7 @@ function TasksURL() {
     };
 }
 
-function TasksFilter() {
+tm.TasksFilter = function() {
     var filter = {
         tags: [],
         startDate: '',
@@ -213,9 +289,9 @@ function TasksFilter() {
     }
 }
 
-function Tasks() {
+tm.Tasks = function() {
     var tasksData = [];
-    var tasksFilter = new TasksFilter();
+    var tasksFilter = new tm.TasksFilter();
 
     var loadTasks = function() {
         // getting tasks from stub
@@ -251,14 +327,3 @@ function Tasks() {
         store.remove(tasksObjectName);
     }
 }
-
-$(document).ready(function() {
-    $(window).on('popstate', function(){
-        //stub code
-        console.log('popstate triggered');
-    });
-
-    var u = new Util();
-    u.renderTasksDOMElement();
-    var tm = new TagsMenu();
-});
