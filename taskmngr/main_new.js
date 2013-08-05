@@ -43,7 +43,7 @@ tm.Util = {
     renderOneTaskDOMElement: function (taskObject) {
         // template generation
 
-        var taskElement = $("<li>");
+        var taskElement = $("<div>");
         taskElement.addClass("task row");
 
         var taskTitle = $("<span>") ;
@@ -151,15 +151,15 @@ tm.TagsMenu = function() {
     }
 
     var renderOneTagDOMel = function(tagData){
-        var tagEl = $('<li></li>');
+        var tagEl = $('<div>');
         tagEl.addClass('tag');
         tagEl.attr('tags', tagData.name);
 
-        var tagtitle = $('<span></span>');
+        var tagtitle = $('<span>');
         tagtitle.addClass('tag-name');
         tagtitle.html(tagData.name);
 
-        var tagcounter = $('<span></span>');
+        var tagcounter = $('<span>');
         tagcounter.addClass('tag-counter');
 
         tagEl.append(tagtitle);
