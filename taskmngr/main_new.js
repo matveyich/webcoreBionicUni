@@ -2,11 +2,13 @@
 
 tm.init = function(){
 
-    tm.Util.renderTasksDOMElement();
+    tm.tasksObj = new tm.Tasks();
 
-    var tagsMenu = new tm.TagsMenu();
-    var datesMenu = new tm.DatesMenu();
+    tm.Util.renderTasksDOMElement(tm.tasksObj);
+    tm.Util.subscribeToEvents();
 
+    tm.tagsMenu = new tm.TagsMenu();
+    tm.datesMenu = new tm.DatesMenu();
 }
 
 tm.Util = {
@@ -19,21 +21,62 @@ tm.Util = {
         tm.Util.allTasksDOMElement().empty();
     },
 
-    fillTasksInDOM: function (tasksObject){
-
+    editBtnClick: function(editBtn){
+        var taskDOMel = editBtn.parents('.task');
+        tm.Util.setEditTaskMode(taskDOMel);
     },
-    appendOneTaskToDOM: function (taskObject, tasksDOMElement) {
 
+    cancelBtnClick: function(cancelBtn){
+        var taskDOMel = cancelBtn.parents('.task');
+        tm.Util.cancelTaskEdit(taskDOMel);
     },
+
+    saveBtnClick: function(saveBtn){
+        var taskDOMel = cancelBtn.parents('.task');
+        tm.Util.saveTaskEdit(taskDOMel);
+    },
+
     setEditTaskMode: function (taskDOMElement) {
+        $.each($('.editing'), function(key, value){
+            tm.Util.cancelTaskEdit($(value));
+        });
 
+        var task = $(taskDOMElement);
+        task.addClass('editing');
+
+        var taskTitle = task.find('.task-title .title-text');
+        var taskBody = task.find('.task-body');
+        var taskTags = task.find('.task-tags');
+        var taskDueDate = task.find('.task-title .due-date');
+
+        taskTitle.html('<input type="text" value="' + taskTitle.html() + '" name="task-title" class="title-text">');
+        taskDueDate.html('<input type="text" value="' + taskDueDate.html() + '" name="task-due-date" class="title-text">');
+        taskTags.html('<input type="text" value="' + taskTags.html() + '" name="task-due-date" class="title-text">');
+        taskBody.html('<textarea name="task-body" class="task-body">' + taskBody.html() + '</textarea>');
+
+        task.find('.edit-task-button').addClass('hidden');
+        task.find('.save-task-button').removeClass('hidden');
+        task.find('.cancel-task-button').removeClass('hidden');
     },
 
     saveTaskEdit: function (taskDOMElement) {
 
     },
-    cancelTaskEdit: function (taskDOMElement) {
 
+    cancelTaskEdit: function (taskDOMElement) {
+        taskDOMElement.removeClass('editing');
+        var taskId = taskDOMElement.attr('id');
+        var taskObj = tm.tasksObj.getTaskObjById(taskId);
+        var taskDOMel = tm.Util.renderOneTaskDOMElement(taskObj);
+
+        taskDOMElement.find('.edit-task-button').removeClass('hidden');
+        taskDOMElement.find('.save-task-button').addClass('hidden');
+        taskDOMElement.find('.cancel-task-button').addClass('hidden');
+
+        taskDOMElement.find('.task-title .title-text').replaceWith($(taskDOMel).find('.task-title .title-text'));
+        taskDOMElement.find('.task-body').replaceWith($(taskDOMel).find('.task-body'));
+        taskDOMElement.find('.task-tags').replaceWith($(taskDOMel).find('.task-tags'));
+        taskDOMElement.find('.task-title .due-date').replaceWith($(taskDOMel).find('.task-title .due-date'));
     },
 
     updateTasksDOM: function () {
@@ -63,7 +106,20 @@ tm.Util = {
 
         var editBtn = $("<div>");
         editBtn.addClass("edit-task-button");
-        editBtn.attr("Id", taskObject.Id);
+        editBtn.attr("taskId", taskObject.Id);
+
+        var saveBtn = $("<div></div>");
+        saveBtn.addClass("save-task-button");
+        saveBtn.addClass("hidden");
+        saveBtn.attr("taskId", taskObject.Id);
+
+        var cancelBtn = $("<div></div>");
+        cancelBtn.addClass("cancel-task-button");
+        cancelBtn.addClass("hidden");
+        cancelBtn.attr("taskId", taskObject.Id);
+
+        var editTaskBlock = $("<div></div>");
+        editTaskBlock.addClass("edit-task-block");
 
         // fill elements with data
 
@@ -75,7 +131,7 @@ tm.Util = {
 
         taskElement.attr("tags", taskObject.tags + '');
 
-        taskElement.attr("Id", 'task-' + taskObject.Id);
+        taskElement.attr("Id", taskObject.Id);
 
         taskTitle.attr("link", taskLink);
 
@@ -84,13 +140,19 @@ tm.Util = {
         dueDate.html(taskObject.dueDate);
 
         editBtn.html("edit");
+        saveBtn.html("save");
+        cancelBtn.html("cancel");
 
         taskBody.html(taskObject.taskBody);
         taskFullText.html(taskObject.taskFullText);
 
-        // cunstruct structure of task element
+        // construct structure of task element
+
         taskTitle.append(dueDate);
-        dueDate.after(editBtn);
+        editTaskBlock.append(editBtn);
+        editTaskBlock.append(saveBtn);
+        editTaskBlock.append(cancelBtn);
+        dueDate.after(editTaskBlock);
         taskElement.append(taskTitle);
         taskElement.append(taskBody);
         taskBody.after(taskTags);
@@ -98,8 +160,8 @@ tm.Util = {
         return taskElement;
     },
 
-    renderTasksDOMElement: function () {
-        var tasks = new tm.Tasks();
+    renderTasksDOMElement: function (tasksObj) {
+        var tasks = tasksObj;
 
         this.clearTasksInDOM();
 
@@ -110,7 +172,19 @@ tm.Util = {
 
     getNormalDate: function(date){
         return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
-    }
+    },
+
+    subscribeToEvents: function(){
+    $('.edit-task-button').on('click', function(e){
+        tm.Util.editBtnClick($(this));
+    });
+    $('.cancel-task-button').on('click', function(e){
+        tm.Util.cancelBtnClick($(this));
+    });
+    $('.save-task-button').on('click', function(e){
+        tm.Util.saveBtnClick($(this));
+    });
+}
 
 }
 
@@ -300,6 +374,17 @@ tm.Tasks = function() {
 
     loadTasks();
 
+    this.getTaskObjById = function(taskId){
+        var obj = {};
+
+        $.each(tasksData, function(key, data){
+            if (data.Id == taskId){
+                obj = data;
+            }
+        });
+        return obj;
+    }
+
     this.applyTasksFilter = function (filterObject) {
 
     }
@@ -325,5 +410,7 @@ tm.Tasks = function() {
 
     this.removeTasksFromLocalStorage = function(tasksObjectName) {
         store.remove(tasksObjectName);
-    }
+    };
+
+
 }

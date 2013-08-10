@@ -202,7 +202,7 @@ function createTaskDOMElement(taskObject){
     var taskElement = $("<li>");
     taskElement.addClass("task row");
 
-    var taskTitle = $("<span>") ;
+    var taskTitle = $("<span>");
     taskTitle.addClass("task-title");
 
     var titleText = $('<span></span>');

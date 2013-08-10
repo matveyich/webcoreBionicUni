@@ -22,22 +22,22 @@
     <groupTables value="false" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.42680776">
+    <splitter split-orientation="horizontal" split-proportion="0.1548913">
       <split-first>
         <leaf>
           <file leaf-file-name="main.css" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/main.css">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="102" column="16" selection-start="1424" selection-end="1424" vertical-scroll-proportion="0.0">
+                <state line="216" column="0" selection-start="3185" selection-end="3185" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="main.js" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="main.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="257" column="12" selection-start="7426" selection-end="7426" vertical-scroll-proportion="0.24479167">
+                <state line="204" column="31" selection-start="6138" selection-end="6138" vertical-scroll-proportion="0.14973262">
                   <folding />
                 </state>
               </provider>
@@ -46,8 +46,11 @@
           <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="35" column="24" selection-start="1219" selection-end="1219" vertical-scroll-proportion="-11.230769">
-                  <folding />
+                <state line="84" column="14" selection-start="2866" selection-end="2866" vertical-scroll-proportion="-19.291666">
+                  <folding>
+                    <element signature="tag#div#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+                    <element signature="tag#div#1;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -56,14 +59,11 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="main_new.js" pinned="false" current="false" current-in-tab="true">
+          <file leaf-file-name="main_new.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/main_new.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="108" column="6" selection-start="2526" selection-end="2526" vertical-scroll-proportion="0.22075783">
-                  <folding>
-                    <element signature="e#2946#3395#0" expanded="false" />
-                    <element signature="e#3442#3858#0" expanded="false" />
-                  </folding>
+                <state line="40" column="43" selection-start="997" selection-end="997" vertical-scroll-proportion="0.43163097">
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -71,7 +71,7 @@
           <file leaf-file-name="tasksData.js" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/tasksData.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="2" column="43" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
+                <state line="2" column="14" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -88,6 +88,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
@@ -101,9 +102,33 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="24" />
-    <option name="width" value="1366" />
-    <option name="height" value="744" />
+    <option name="x" value="-1" />
+    <option name="y" value="-4" />
+    <option name="width" value="1368" />
+    <option name="height" value="773" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>CSS</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>Ruby</id>
+          </State>
+        </expanded-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -136,7 +161,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="JavaScript.Libraries" />
+    <property name="options.lastSelected" value="preferences.editor" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/store.js" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -302,13 +327,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1366" height="744" extended-state="6" />
+    <frame x="-1" y="-4" width="1368" height="773" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287037" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32978722" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13829787" sideWeight="0.6712963" order="0" side_tool="false" content_ui="tabs" x="498" y="73" width="228" height="648" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16109422" sideWeight="0.6712963" order="0" side_tool="false" content_ui="tabs" x="498" y="73" width="228" height="648" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15063386" sideWeight="0.6712963" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19072948" sideWeight="0.5015432" order="0" side_tool="true" content_ui="tabs" />
@@ -394,7 +419,10 @@
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="74" column="0" selection-start="2290" selection-end="2290" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="tag#div#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+            <element signature="tag#div#1;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -415,7 +443,10 @@
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="74" column="0" selection-start="2290" selection-end="2290" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="tag#div#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+            <element signature="tag#div#1;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -436,7 +467,10 @@
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="tag#div#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+            <element signature="tag#div#1;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -452,40 +486,40 @@
         <state line="103" column="45" selection-start="25736" selection-end="25736" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.css">
+    <entry file="file://$PROJECT_DIR$/tasksData.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="16" selection-start="1424" selection-end="1424" vertical-scroll-proportion="0.0">
+        <state line="2" column="14" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tasksData.js">
+    <entry file="file://$PROJECT_DIR$/main.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="43" selection-start="42" selection-end="42" vertical-scroll-proportion="0.0">
+        <state line="216" column="0" selection-start="3185" selection-end="3185" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="24" selection-start="1219" selection-end="1219" vertical-scroll-proportion="-11.230769">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main_new.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="6" selection-start="2526" selection-end="2526" vertical-scroll-proportion="0.22075783">
+        <state line="84" column="14" selection-start="2866" selection-end="2866" vertical-scroll-proportion="-19.291666">
           <folding>
-            <element signature="e#2946#3395#0" expanded="false" />
-            <element signature="e#3442#3858#0" expanded="false" />
+            <element signature="tag#div#0;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
+            <element signature="tag#div#1;tag#div#0;tag#body#0;tag#html#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="257" column="12" selection-start="7426" selection-end="7426" vertical-scroll-proportion="0.24479167">
+        <state line="204" column="31" selection-start="6138" selection-end="6138" vertical-scroll-proportion="0.14973262">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_new.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="43" selection-start="997" selection-end="997" vertical-scroll-proportion="0.43163097">
           <folding />
         </state>
       </provider>

@@ -161,7 +161,9 @@ header a.next {
 	float: right;
 	font-size: 0.8rem;
 }
-
+.edit-task-block {
+    display: inline-block;
+}
 .save-task-button, .cancel-task-button, .edit-task-button {
     display: inline;
     margin-left: 0.2rem;
@@ -208,4 +210,7 @@ textarea.task-body {
 input.title-text {
     width: 90%;
     border: 1px solid;
+}
+.hidden {
+    display: none;
 }

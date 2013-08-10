@@ -18,10 +18,10 @@
             $(document).ready(function() {
                 $(window).on('popstate', function(){
                     //stub code
-                    console.log('popstate triggered');
+                    tm.init();
                 });
 
-                tm.init();
+
             });
         </script>
 	</head>
@@ -66,8 +66,8 @@
 				<div id="add-task-btn" class="task new-task" class="row">
 					<span class="task-title">Add task</span>
 				</div>	            
-				<ul id="tasks" class="row">
-					<li class="task" class="row" tags="Important">
+				<div id="tasks" class="row">
+					<div class="task" class="row" tags="Important">
 						<span class="task-title">
 							Template task
 							<span class="due-date">24.06.2013</span>
@@ -78,9 +78,10 @@
 						<span class="task-fulltext">
 							n/a
 						</span>
-					</li>												
+					</div>
 				</ul>	
 			</div>
 		</div>
+        </div>
 	</body>
 </html>
