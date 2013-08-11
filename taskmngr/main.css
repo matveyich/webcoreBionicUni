@@ -164,7 +164,11 @@ header a.next {
 .edit-task-block {
     display: inline-block;
 }
-.save-task-button, .cancel-task-button, .edit-task-button {
+.save-task-button,
+.save-new-task-button,
+.cancel-task-button,
+.cancel-new-task-button,
+.edit-task-button {
     display: inline;
     margin-left: 0.2rem;
     cursor: pointer;
@@ -174,7 +178,11 @@ header a.next {
     padding: 0.1rem;
 }
 
-.save-task-button:hover, .cancel-task-button:hover, .edit-task-button:hover {
+.save-task-button:hover,
+.save-new-task-button:hover,
+.cancel-task-button:hover,
+.cancel-new-task-button:hover,
+.edit-task-button:hover {
     background-color: #ff4500;
     color: white;
 }
@@ -207,10 +215,22 @@ textarea.task-body {
     min-height: 2.2rem;
 }
 
-input.title-text {
+input.title-text,
+input.task-title,
+input.task-due-date,
+input.task-tags
+{
     width: 90%;
     border: 1px solid;
 }
+
+.task-form {
+    background-color: #dedede;
+    color: black;
+}
+
+
+
 .hidden {
     display: none;
 }

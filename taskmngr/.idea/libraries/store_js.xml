@@ -1,8 +1,13 @@
 <component name="libraryTable">
   <library name="store.js" type="javaScript">
-    <CLASSES />
-    <SOURCES>
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/store.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
       <root url="file://$PROJECT_DIR$/store.js" />
-    </SOURCES>
+    </CLASSES>
+    <SOURCES />
   </library>
 </component>

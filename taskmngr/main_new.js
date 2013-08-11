@@ -2,13 +2,15 @@
 
 tm.init = function(){
 
-    tm.tasksObj = new tm.Tasks();
+    tm.curTasksObject = new tm.Tasks();
 
-    tm.Util.renderTasksDOMElement(tm.tasksObj);
+    tm.Util.renderTasksDOMElement(tm.curTasksObject);
     tm.Util.subscribeToEvents();
 
     tm.tagsMenu = new tm.TagsMenu();
     tm.datesMenu = new tm.DatesMenu();
+
+    $('#add-task-btn').append(tm.Util.renderTaskForm());
 }
 
 tm.Util = {
@@ -23,7 +25,7 @@ tm.Util = {
 
     editBtnClick: function(editBtn){
         var taskDOMel = editBtn.parents('.task');
-        tm.Util.setEditTaskMode(taskDOMel);
+        tm.Util.setEditTaskMode($(taskDOMel));
     },
 
     cancelBtnClick: function(cancelBtn){
@@ -32,8 +34,57 @@ tm.Util = {
     },
 
     saveBtnClick: function(saveBtn){
-        var taskDOMel = cancelBtn.parents('.task');
-        tm.Util.saveTaskEdit(taskDOMel);
+        var taskDOMel = saveBtn.parents('.task');
+        tm.Util.saveTaskEdit($(taskDOMel));
+    },
+
+    addTaskBtnClick: function(addBtn){
+        $('#add-task-btn .task-form').toggleClass('hidden');
+    },
+
+    saveNewTaskBtnClick: function(saveBtn) {
+        var newTaskForm = saveBtn.parents('.task-form');
+        console.log(newTaskForm);
+    },
+
+
+    renderTaskForm: function(){
+        var formBlock = $('<div></div>');
+        formBlock.addClass('hidden');
+        formBlock.addClass('task-form');
+
+        var title = $('<input>');
+        title.addClass('task-title');
+        title.attr('name', 'task-title');
+        title.attr('type', 'text');
+
+        var dueDate = $('<input>');
+        dueDate.addClass('task-due-date');
+        dueDate.attr('name', 'task-due-date');
+        dueDate.attr('type', 'text');
+
+        var body = $('<textarea></textarea>');
+        body.addClass('task-body');
+        body.attr('name' ,'task-body');
+
+        var tags = $('<input>');
+        tags.addClass('task-tags');
+        tags.attr('name', 'task-tags');
+        tags.attr('type', 'text');
+
+        var saveBtn = $("<div>save</div>");
+        saveBtn.addClass("save-new-task-button");
+
+        var cancelBtn = $("<div>cancel</div>");
+        cancelBtn.addClass("cancel-new-task-button");
+
+        formBlock.append($('<div class="new-task-title row">Title: </div>').append(title));
+        formBlock.append($('<div class="new-task-due-date row">Due date: </div>').append(dueDate));
+        formBlock.append($('<div class="new-task-body row">Task: </div>').append(body));
+        formBlock.append($('<div class="new-task-tags row">Tags: </div>').append(tags));
+        formBlock.append($($('<div class="new-task-buttons row"></div>').append(saveBtn)).append(cancelBtn));
+
+        return formBlock;
     },
 
     setEditTaskMode: function (taskDOMElement) {
@@ -41,7 +92,7 @@ tm.Util = {
             tm.Util.cancelTaskEdit($(value));
         });
 
-        var task = $(taskDOMElement);
+        var task = taskDOMElement;
         task.addClass('editing');
 
         var taskTitle = task.find('.task-title .title-text');
@@ -51,7 +102,7 @@ tm.Util = {
 
         taskTitle.html('<input type="text" value="' + taskTitle.html() + '" name="task-title" class="title-text">');
         taskDueDate.html('<input type="text" value="' + taskDueDate.html() + '" name="task-due-date" class="title-text">');
-        taskTags.html('<input type="text" value="' + taskTags.html() + '" name="task-due-date" class="title-text">');
+        taskTags.html('<input type="text" value="' + taskTags.html() + '" name="task-tags" class="title-text">');
         taskBody.html('<textarea name="task-body" class="task-body">' + taskBody.html() + '</textarea>');
 
         task.find('.edit-task-button').addClass('hidden');
@@ -60,13 +111,37 @@ tm.Util = {
     },
 
     saveTaskEdit: function (taskDOMElement) {
+        var task = taskDOMElement;
+        task.removeClass('editing');
 
+        var taskTitle = task.find('[name="task-title"]')[0].value;
+        var taskBody = task.find('[name="task-body"]')[0].value;
+        var taskLink = task.find('.task-title').attr('link');
+        var taskDueDate = task.find('[name=task-due-date]')[0].value;
+        var taskTags = task.find('[name=task-tags]')[0].value.split(',');
+
+        var taskObject = tm.curTasksObject.newTaskObject(
+            task.attr('id'),
+            taskTitle,
+            taskDueDate,
+            taskTags,
+            taskBody,
+            taskLink
+        );
+
+        tm.curTasksObject.updateTasksObject(taskObject);
+        tm.Util.unsetTaskEditMode(taskDOMElement);
     },
 
     cancelTaskEdit: function (taskDOMElement) {
+        tm.Util.unsetTaskEditMode(taskDOMElement);
+    },
+
+    unsetTaskEditMode: function (taskDOMElement) {
+
         taskDOMElement.removeClass('editing');
         var taskId = taskDOMElement.attr('id');
-        var taskObj = tm.tasksObj.getTaskObjById(taskId);
+        var taskObj = tm.curTasksObject.getTaskObjById(taskId);
         var taskDOMel = tm.Util.renderOneTaskDOMElement(taskObj);
 
         taskDOMElement.find('.edit-task-button').removeClass('hidden');
@@ -184,6 +259,13 @@ tm.Util = {
     $('.save-task-button').on('click', function(e){
         tm.Util.saveBtnClick($(this));
     });
+    $('#add-task-btn .task-title').on('click', function(e){
+        tm.Util.addTaskBtnClick($(this));
+    });
+    $('#add-task-btn').find('.save-new-task-button').on('click', function(e){
+        tm.Util.saveNewTaskBtnClick($(this));
+    });
+
 }
 
 }
@@ -385,6 +467,21 @@ tm.Tasks = function() {
         return obj;
     }
 
+    this.newTaskObject = function(
+        id, title, dueDate, tags, body, link
+        ){
+        var taskObject = {
+            Id: id,
+            title: title,
+            dueDate: dueDate,
+            tags: tags,
+            taskBody: body,
+            link: link
+        };
+
+        return taskObject;
+    }
+
     this.applyTasksFilter = function (filterObject) {
 
     }
@@ -394,14 +491,20 @@ tm.Tasks = function() {
     }
 
     this.addTask = function (taskObject) {
-
+        tasksData.push(taskObject);
     };
 
     this.deleteTask = function (taskObjectId) {
 
     };
 
-    this.updateTaskObject = function (taskObject) {
+    this.updateTasksObject = function (taskObject) {
+        $.each(tasksData, function(key, value){
+            if (value.Id == taskObject.Id) {
+                tasksData[key] = taskObject;
+                return false;
+            }
+        });
     };
 
     this.saveTasksToLocalStorage = function (tasksObject, tasksObjectName) {
