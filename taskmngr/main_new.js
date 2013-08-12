@@ -1,4 +1,4 @@
-﻿var tm = {};
+var tm = {};
 
 tm.init = function(){
 
@@ -11,6 +11,7 @@ tm.init = function(){
     tm.datesMenu = new tm.DatesMenu();
 
     $('#add-task-btn').append(tm.Util.renderTaskForm());
+    tm.Util.Map.renderMapDOMElement();
 }
 
 tm.Util = {
@@ -155,8 +156,45 @@ tm.Util = {
     },
 
     updateTasksDOM: function () {
-
+        
     },
+
+    Map: {
+        renderMapDOMElement: function () {
+            var taskMapDOMel = $('#task-map');
+            taskMapDOMel.removeClass('hidden');
+            tm.Util.Map.showCoordinates();
+        },
+
+        showCoordinates: function() {
+
+            var mapOptions = {
+                center: new google.maps.LatLng(50, 30),
+                zoom: 5,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+
+            var map = new google.maps.Map(document.getElementById("task-map"), mapOptions);
+
+            $.each(tm.curTasksObject.get(), function (key, value) {
+                if (value.position) {
+                    var position = new google.maps.LatLng(value.position.lat, value.position.long);
+                    var marker = new google.maps.Marker({ position: position, map: map, taskId: value.Id });
+
+                    google.maps.event.addListener(marker, "click", function (e) {
+                        var infoWindow = new google.maps.InfoWindow({
+                            content: '<a href="' + value.link + '">' + value.title + '</a>'
+                        });
+                        infoWindow.open(map, marker);
+
+                    });
+                }
+            });
+            
+            }
+    },
+
+
 
     renderOneTaskDOMElement: function (taskObject) {
         // template generation
