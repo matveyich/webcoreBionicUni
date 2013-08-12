@@ -13,7 +13,8 @@ var tasksDataStub = [
         dueDate: "24.06.2013",
         tags: ["In-progress"],
         taskBody: "Выслать участникам на проработку и на проработку дизайна отдельных элементов (статусы, клавиатура)",
-        link: "http://google.com/?q=cti integration with avaya aura"
+        link: "http://google.com/?q=cti integration with avaya aura",
+        position: {lat: 50, long: 30}
     },
     {
         Id: 3,
@@ -21,7 +22,8 @@ var tasksDataStub = [
         dueDate: "24.06.2013",
         tags: ["Finished"],
         taskBody: "Проработать концепцию генерации лидов с внешних источников, анализ возможностей api",
-        link: "http://google.com/?q=google analytics api"
+        link: "http://google.com/?q=google analytics api",
+        position: { lat: 51, long: 31 }
     },
     {
         Id: 4,
