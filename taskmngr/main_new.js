@@ -1,8 +1,9 @@
-var tm = {};
+﻿var tm = {};
 
 tm.init = function(){
 
     tm.curTasksObject = new tm.Tasks();
+    tm.curURLObject = new tm.TasksURL();
 
     tm.Util.renderTasksDOMElement(tm.curTasksObject);
     tm.Util.subscribeToEvents();
@@ -373,16 +374,11 @@ tm.TagsMenu = function() {
         var tags = tag.attr('tags');
         if (tag.hasClass('tag-selected')) {
             tag.removeClass('tag-selected');
-
-         //history.pushState(null, null, '#/');
-            location.href = '#/';
+            tm.curURLObject.set('tags', '');
         } else {
-            var tags = tag.attr('tags');
             tag.siblings().removeClass('tag-selected');
             tag.addClass('tag-selected');
-
-            //history.pushState(null, null, '#/' + tags.split(','))
-            location.href = '#/' + tags.split(',');
+            tm.curURLObject.set('tags', tags.split(','));
         }
     };
 
@@ -401,6 +397,8 @@ tm.DatesMenu = function() {
     var datesThisWeekDOMel = $('#dates-this-week');
     var datesNextWeekDOMel = $('#dates-next-week');
     var datesLastWeekDOMel = $('#dates-last-week');
+
+    var dateTagDOMel = $('#dates .tag');
 
     var init = function(){
         var today = Date.today();
@@ -448,19 +446,94 @@ tm.DatesMenu = function() {
         datesNextWeekDOMel.attr('startDate', tm.Util.getNormalDate(nextWeekStart));
         datesLastWeekDOMel.attr('dueDate', tm.Util.getNormalDate(lastWeekEnd));
         datesLastWeekDOMel.attr('startDate', tm.Util.getNormalDate(lastWeekStart));
+
+
+        dateTagDOMel = $('#dates .tag');
+        clickDateTagSubscribe();
+    };
+
+    var clickDateTag = function(dateTag) {
+        if (dateTag.hasClass('tag-selected')){
+            dateTag.removeClass('tag-selected');
+            tm.curURLObject.set('dates', {dueDate: '', startDate: ''});
+            //window.taskFilter.setDates({dueDate: '01.01.9999', startDate: '01.01.0001'});
+        } else {
+            var startDate = dateTag.attr('startDate');
+            var dueDate = dateTag.attr('dueDate');
+            dateTag.siblings().removeClass('tag-selected');
+            dateTag.addClass('tag-selected');
+            tm.curURLObject.set('dates', {dueDate: dueDate, startDate: startDate});
+        }
+    };
+
+    var clickDateTagSubscribe = function() {
+        dateTagDOMel.on('click', function(e){
+            clickDateTag($(this));
+        });
     };
 
     init();
-
 }
 
 tm.TasksURL = function() {
-    var currentURL = {};
-
-    this.set = function () { };
-    this.get = function () {
-        return currentURL;
+    var currentUrl = {
+        tags: [],
+        dates: {dueDate:'', startDate:''}
     };
+
+    this.set = function(type, value) {
+        if (type == "tags"){
+            currentUrl.tags = value;
+        } else if(type == "dates") {
+            currentUrl.dates = value;
+        }
+
+        var url = '';
+        var urlArray = []
+
+        if (currentUrl.tags.length > 0) {
+            urlArray.push('tags');
+            urlArray.push(currentUrl.tags);
+        }
+        if (currentUrl.dates.dueDate.length > 0){
+            urlArray.push('dueDate');
+            urlArray.push(currentUrl.dates.dueDate);
+        }
+        if (currentUrl.dates.startDate.length > 0){
+            urlArray.push('startDate');
+            urlArray.push(currentUrl.dates.startDate);
+        }
+
+        url = '#/' + urlArray.join('/');
+
+        if (history.pushState) {
+            history.pushState(currentUrl, null, url);
+        } else {
+            location.href = url;
+        }
+    };
+
+    this.get = function(){
+        var route = location.hash;
+        var segments = route.split("/");
+        if(segments[0] == "#")
+        {
+            segments.splice(0,1);
+        }
+
+        $.each(segments, function(key, value){
+            if (value == "tags") {
+                currentUrl.tags.push(segments[key + 1]);
+            }
+            if (value == "dueDate") {
+                currentUrl.dates.dueDate = segments[key + 1];
+            }
+            if (value == "startDate") {
+                currentUrl.dates.startDate = segments[key + 1];
+            }
+        });
+        return currentUrl;
+    }
 }
 
 tm.TasksFilter = function() {
