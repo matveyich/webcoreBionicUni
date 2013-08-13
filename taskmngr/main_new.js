@@ -2,17 +2,19 @@
 
 tm.init = function(){
 
-    tm.curTasksObject = new tm.Tasks();
     tm.curURLObject = new tm.TasksURL();
+    tm.curFilterObject = new tm.TasksFilter();
+    tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
+
+    tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
+
+    tm.tagsMenu = new tm.TagsMenu(tm.curURLObject);
+    tm.datesMenu = new tm.DatesMenu(tm.curURLObject);
 
     tm.Util.renderTasksDOMElement(tm.curTasksObject);
-    tm.Util.subscribeToEvents();
-
-    tm.tagsMenu = new tm.TagsMenu();
-    tm.datesMenu = new tm.DatesMenu();
 
     $('#add-task-btn').append(tm.Util.renderTaskForm());
-    tm.Util.Map.renderMapDOMElement();
+
 }
 
 tm.Util = {
@@ -288,6 +290,25 @@ tm.Util = {
         return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
     },
 
+    activateURL: function (filterObject, curURLObject) {
+        var urlFilter = curURLObject.get();
+        var filterDates = {dueDate:'', startDate:''};
+
+        if (urlFilter.tags.length > 0) {
+            filterObject.setTagsFilter(urlFilter.tags);
+        }
+
+        if (urlFilter.dates.dueDate.length > 0) {
+            filterDates.dueDate = urlFilter.dates.dueDate;
+        } else {filterDates.dueDate = '01.01.9999';}
+
+        if (urlFilter.dates.startDate.length > 0) {
+            filterDates.startDate = urlFilter.dates.startDate;
+        } else {filterDates.startDate = '01.01.0001';}
+
+        filterObject.setDatesFilter(filterDates);
+    },
+
     subscribeToEvents: function(){
     $('.edit-task-button').on('click', function(e){
         tm.Util.editBtnClick($(this));
@@ -309,11 +330,11 @@ tm.Util = {
 
 }
 
-tm.TagsMenu = function() {
+tm.TagsMenu = function(curURLObject) {
     var tagsDOMel = $('#tags');
     var tagDOMel = '';
-
     var tags = '';
+    var curURL = curURLObject.get();
 
     var init = function () {
         tags = getTags();
@@ -360,6 +381,10 @@ tm.TagsMenu = function() {
         tagEl.append(tagtitle);
         tagEl.append(tagcounter);
 
+        if ($.inArray(tagData.name, curURL.tags) >= 0) {
+            tagEl.addClass('tag-selected');
+        }
+
         return tagEl;
     }
 
@@ -374,11 +399,11 @@ tm.TagsMenu = function() {
         var tags = tag.attr('tags');
         if (tag.hasClass('tag-selected')) {
             tag.removeClass('tag-selected');
-            tm.curURLObject.set('tags', '');
+            curURLObject.set('tags', '');
         } else {
             tag.siblings().removeClass('tag-selected');
             tag.addClass('tag-selected');
-            tm.curURLObject.set('tags', tags.split(','));
+            curURLObject.set('tags', tags.split(','));
         }
     };
 
@@ -391,7 +416,7 @@ tm.TagsMenu = function() {
     init();
 }
 
-tm.DatesMenu = function() {
+tm.DatesMenu = function(curURLObject) {
     var datesDOMel = $('#dates');
     var datesTodayDOMel = $('#dates-today');
     var datesThisWeekDOMel = $('#dates-this-week');
@@ -447,7 +472,6 @@ tm.DatesMenu = function() {
         datesLastWeekDOMel.attr('dueDate', tm.Util.getNormalDate(lastWeekEnd));
         datesLastWeekDOMel.attr('startDate', tm.Util.getNormalDate(lastWeekStart));
 
-
         dateTagDOMel = $('#dates .tag');
         clickDateTagSubscribe();
     };
@@ -455,14 +479,14 @@ tm.DatesMenu = function() {
     var clickDateTag = function(dateTag) {
         if (dateTag.hasClass('tag-selected')){
             dateTag.removeClass('tag-selected');
-            tm.curURLObject.set('dates', {dueDate: '', startDate: ''});
+            curURLObject.set('dates', {dueDate: '', startDate: ''});
             //window.taskFilter.setDates({dueDate: '01.01.9999', startDate: '01.01.0001'});
         } else {
             var startDate = dateTag.attr('startDate');
             var dueDate = dateTag.attr('dueDate');
             dateTag.siblings().removeClass('tag-selected');
             dateTag.addClass('tag-selected');
-            tm.curURLObject.set('dates', {dueDate: dueDate, startDate: startDate});
+            curURLObject.set('dates', {dueDate: dueDate, startDate: startDate});
         }
     };
 
@@ -489,7 +513,7 @@ tm.TasksURL = function() {
         }
 
         var url = '';
-        var urlArray = []
+        var urlArray = [];
 
         if (currentUrl.tags.length > 0) {
             urlArray.push('tags');
@@ -505,12 +529,7 @@ tm.TasksURL = function() {
         }
 
         url = '#/' + urlArray.join('/');
-
-        if (history.pushState) {
-            history.pushState(currentUrl, null, url);
-        } else {
-            location.href = url;
-        }
+        location.href = url;
     };
 
     this.get = function(){
@@ -539,26 +558,34 @@ tm.TasksURL = function() {
 tm.TasksFilter = function() {
     var filter = {
         tags: [],
-        startDate: '',
-        dueDate: ''
+        startDate: '01.01.0001',
+        dueDate: '01.01.9999',
+        applyDatesFilter: true,
+        applyTagsFilter: false
     };
-
-    this.init = function () {
-
-    }
 
     this.setTagsFilter = function (tags) {
+        if (tags.length == 0) {
+            filter.applyDatesFilter = false;
+        } else {
+            filter.applyTagsFilter = true;
+            filter.tags = tags;
+        }
     };
-    this.setDatesFilter = function (startDate, dueDate) {
-    }
+
+    this.setDatesFilter = function (dates) {
+        filter.dueDate = dates.dueDate;
+        filter.startDate = dates.startDate;
+    };
+
     this.getCurrentFilter = function () {
         return filter;
-    }
+    };
 }
 
-tm.Tasks = function() {
+tm.Tasks = function(tasksFilterObject) {
     var tasksData = [];
-    var tasksFilter = new tm.TasksFilter();
+    var tasksFilter = tasksFilterObject.getCurrentFilter();
 
     var loadTasks = function() {
         // getting tasks from stub
@@ -593,12 +620,33 @@ tm.Tasks = function() {
         return taskObject;
     }
 
-    this.applyTasksFilter = function (filterObject) {
+    this.applyTasksFilter = function (tasksFilter) {
+        var result = [];
+        if (tasksFilter.applyDatesFilter) {
 
+            var startDate = Date.parse(tasksFilter.startDate);
+            var dueDate = Date.parse(tasksFilter.dueDate);
+
+            $.each(tasksData, function(key, value){
+
+                if (Date.parse(value.dueDate).between(startDate, dueDate) == true) {
+
+                    if (tasksFilter.applyTagsFilter) {
+
+                        if ($.inArray(tasksFilter.tags[0], value.tags) >= 0) {
+                            result.push(value);
+                        }
+                    } else result.push(value);
+
+                }
+            });
+        } else result = tasksData;
+
+        return result;
     }
 
     this.get = function () {
-        return tasksData;
+        return this.applyTasksFilter(tasksFilter);
     }
 
     this.addTask = function (taskObject) {

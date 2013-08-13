@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
@@ -21,10 +21,14 @@
             $(document).ready(function() {
                 $(window).on('popstate', function(){
                     //stub code
-                    tm.init();
+                    console.log('popstate');
+                    tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
+
+                    tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
+                    tm.Util.renderTasksDOMElement(tm.curTasksObject);
                 });
-
-
+                tm.init();
+                tm.Util.subscribeToEvents();
             });
         </script>
 	</head>
