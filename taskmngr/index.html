@@ -22,10 +22,8 @@
                 $(window).on('popstate', function(){
                     //stub code
                     console.log('popstate');
-                    tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
+                    tm.Util.rebuildPage();
 
-                    tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
-                    tm.Util.renderTasksDOMElement(tm.curTasksObject);
                 });
                 tm.init();
                 tm.Util.subscribeToEvents();

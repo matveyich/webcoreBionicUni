@@ -2,23 +2,26 @@
 
 tm.init = function(){
 
-    tm.curURLObject = new tm.TasksURL();
-    tm.curFilterObject = new tm.TasksFilter();
-    tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
-
-    tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
+    tm.Util.rebuildPage();
 
     tm.tagsMenu = new tm.TagsMenu(tm.curURLObject);
     tm.datesMenu = new tm.DatesMenu(tm.curURLObject);
 
-    tm.Util.renderTasksDOMElement(tm.curTasksObject);
-
-    $('#add-task-btn').append(tm.Util.renderTaskForm());
+    $('#add-task-btn').after(tm.Util.renderTaskForm());
 
 }
 
 tm.Util = {
     tasksObjectName: '',
+
+    rebuildPage: function() {
+        tm.curURLObject = new tm.TasksURL();
+        tm.curFilterObject = new tm.TasksFilter();
+        tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
+        tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
+        tm.Util.renderTasksDOMElement(tm.curTasksObject);
+    },
+
     allTasksDOMElement: function() {
         return $('#tasks');
     },
@@ -43,19 +46,37 @@ tm.Util = {
     },
 
     addTaskBtnClick: function(addBtn){
-        $('#add-task-btn .task-form').toggleClass('hidden');
+        $('#add-task-from').toggleClass('hidden');
     },
 
-    saveNewTaskBtnClick: function(saveBtn) {
+    saveNewTaskBtnClick: function(saveBtn, tasksObject) {
         var newTaskForm = saveBtn.parents('.task-form');
-        console.log(newTaskForm);
+        var taskObject = {
+            id: tm.Util.generateUID(),
+            title: newTaskForm.find('[name=task-title]').val(),
+            dueDate: newTaskForm.find('[name=task-due-date]').val(),
+            tags: [newTaskForm.find('[name=task-tags]').val()],
+            body: newTaskForm.find('[name=task-body]').val(),
+            link: ''
+        };
+        tm.Util.clearTaskForm(newTaskForm);
+        tasksObject.addTask(taskObject);
+        tm.Util.rebuildPage();
     },
 
+    clearTaskForm: function(form) {
+        form.find('[name=task-title]').val('');
+        form.find('[name=task-due-date]').val('');
+        form.find('[name=task-tags]').val('');
+        form.find('[name=task-body]').val('');
+        form.toggleClass('hidden');
+    },
 
     renderTaskForm: function(){
         var formBlock = $('<div></div>');
         formBlock.addClass('hidden');
         formBlock.addClass('task-form');
+        formBlock.attr('id', 'add-task-from')
 
         var title = $('<input>');
         title.addClass('task-title');
@@ -277,17 +298,24 @@ tm.Util = {
     },
 
     renderTasksDOMElement: function (tasksObj) {
-        var tasks = tasksObj;
+        var tasks = tasksObj.get();
 
         this.clearTasksInDOM();
 
-        $.each(tasks.get(), function(key, value){
+        $.each(tasks, function(key, value){
             tm.Util.allTasksDOMElement().append(tm.Util.renderOneTaskDOMElement(value));
         });
     },
 
     getNormalDate: function(date){
-        return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
+        return (date.getMonth() + 1) + '.' + date.getDate() + '.' + date.getFullYear();
+    },
+
+    generateUID: function() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
     },
 
     activateURL: function (filterObject, curURLObject) {
@@ -296,6 +324,8 @@ tm.Util = {
 
         if (urlFilter.tags.length > 0) {
             filterObject.setTagsFilter(urlFilter.tags);
+        } else {
+            filterObject.setTagsFilter('');
         }
 
         if (urlFilter.dates.dueDate.length > 0) {
@@ -319,11 +349,11 @@ tm.Util = {
     $('.save-task-button').on('click', function(e){
         tm.Util.saveBtnClick($(this));
     });
-    $('#add-task-btn .task-title').on('click', function(e){
+    $('#add-task-btn').on('click', function(e){
         tm.Util.addTaskBtnClick($(this));
     });
-    $('#add-task-btn').find('.save-new-task-button').on('click', function(e){
-        tm.Util.saveNewTaskBtnClick($(this));
+    $('#add-task-from').find('.save-new-task-button').on('click', function(e){
+        tm.Util.saveNewTaskBtnClick($(this), tm.curTasksObject);
     });
 
 }
@@ -535,6 +565,11 @@ tm.TasksURL = function() {
     this.get = function(){
         var route = location.hash;
         var segments = route.split("/");
+        var curURL = {
+            tags: [],
+            dates: {dueDate:'', startDate:''}
+        };
+
         if(segments[0] == "#")
         {
             segments.splice(0,1);
@@ -542,16 +577,17 @@ tm.TasksURL = function() {
 
         $.each(segments, function(key, value){
             if (value == "tags") {
-                currentUrl.tags.push(segments[key + 1]);
+                curURL.tags.push(segments[key + 1]);
+                console.log(currentUrl.tags);
             }
             if (value == "dueDate") {
-                currentUrl.dates.dueDate = segments[key + 1];
+                curURL.dates.dueDate = segments[key + 1];
             }
             if (value == "startDate") {
-                currentUrl.dates.startDate = segments[key + 1];
+                curURL.dates.startDate = segments[key + 1];
             }
         });
-        return currentUrl;
+        return curURL;
     }
 }
 
@@ -566,7 +602,7 @@ tm.TasksFilter = function() {
 
     this.setTagsFilter = function (tags) {
         if (tags.length == 0) {
-            filter.applyDatesFilter = false;
+            filter.applyTagsFilter = false;
         } else {
             filter.applyTagsFilter = true;
             filter.tags = tags;
@@ -620,7 +656,7 @@ tm.Tasks = function(tasksFilterObject) {
         return taskObject;
     }
 
-    this.applyTasksFilter = function (tasksFilter) {
+    this.applyTasksFilter = function () {
         var result = [];
         if (tasksFilter.applyDatesFilter) {
 
@@ -646,7 +682,7 @@ tm.Tasks = function(tasksFilterObject) {
     }
 
     this.get = function () {
-        return this.applyTasksFilter(tasksFilter);
+        return this.applyTasksFilter();
     }
 
     this.addTask = function (taskObject) {
