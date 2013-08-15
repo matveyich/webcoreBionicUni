@@ -42,3 +42,7 @@ var tasksDataStub = [
         link: "http://google.com/?q=how to make up for report"
     }
 ];
+
+if (store.get('tm.tasks' == undefined)) {
+    store.set('tm.tasks', tasksDataStub);
+}

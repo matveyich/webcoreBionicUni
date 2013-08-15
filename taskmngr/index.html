@@ -20,13 +20,9 @@
         <script type="text/javascript">
             $(document).ready(function() {
                 $(window).on('popstate', function(){
-                    //stub code
-                    console.log('popstate');
                     tm.Util.rebuildPage();
-
                 });
                 tm.init();
-                tm.Util.subscribeToEvents();
             });
         </script>
 	</head>
@@ -64,9 +60,10 @@
 			</div>
 			<div id="center-panel" class="column">
 				<header>
-	              <a class="prev" href="#">Prev</a>
-	              <a class="next" href="#">Next</a>
-	              <h1 id="date" class="date"><b>Mon</b> Jun 24 2013</h1>
+	              <h1 id="date" class="date">
+                      <div class="row day">Mon</div>
+                      <div class="row date">Jun 24 2013</div>
+                  </h1>
 	            </header>
                 <div id="task-map" class="row hidden"></div>
 				<div id="add-task-btn" class="task new-task" class="row">

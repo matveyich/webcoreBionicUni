@@ -164,6 +164,7 @@ header a.next {
 .edit-task-block {
     display: inline-block;
 }
+.delete-task-button,
 .save-task-button,
 .save-new-task-button,
 .cancel-task-button,
@@ -178,6 +179,7 @@ header a.next {
     padding: 0.1rem;
 }
 
+.delete-task-button:hover,
 .save-task-button:hover,
 .save-new-task-button:hover,
 .cancel-task-button:hover,

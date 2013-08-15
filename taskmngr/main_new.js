@@ -1,11 +1,11 @@
 ﻿var tm = {};
 
 tm.init = function(){
-
     tm.Util.rebuildPage();
 
     tm.tagsMenu = new tm.TagsMenu(tm.curURLObject);
     tm.datesMenu = new tm.DatesMenu(tm.curURLObject);
+    tm.Util.renderTodayHeader();
 
     $('#add-task-btn').after(tm.Util.renderTaskForm());
 
@@ -17,9 +17,28 @@ tm.Util = {
     rebuildPage: function() {
         tm.curURLObject = new tm.TasksURL();
         tm.curFilterObject = new tm.TasksFilter();
+
         tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
-        tm.curTasksObject = new tm.Tasks(tm.curFilterObject);
+
+        tm.curTasksObject = new tm.Tasks(tm.curFilterObject, 'tm.tasks');
+        tm.curTasksObject.loadTasks();
+
         tm.Util.renderTasksDOMElement(tm.curTasksObject);
+        tm.Util.subscribeToEvents();
+    },
+
+    renderTodayHeader: function(){
+        var day = $('#date').find('.day');
+        var date = $('#date').find('.date');
+        var today = Date.today();
+
+        day.html(today.getDayName());
+        date.html(today.getMonthName()
+            + ' '
+            + today.getDate()
+            + ' '
+            + today.getFullYear()
+        )
     },
 
     allTasksDOMElement: function() {
@@ -45,8 +64,16 @@ tm.Util = {
         tm.Util.saveTaskEdit($(taskDOMel));
     },
 
+    delBtnClick: function(delBtn){
+        var taskDOMel = delBtn.parents('.task');
+        var taskid = delBtn.attr('taskId');
+        tm.curTasksObject.deleteTask(taskid);
+        $(taskDOMel).remove();
+    },
+
     addTaskBtnClick: function(addBtn){
-        $('#add-task-from').toggleClass('hidden');
+        $('#add-task-form').toggleClass('hidden');
+
     },
 
     saveNewTaskBtnClick: function(saveBtn, tasksObject) {
@@ -76,7 +103,7 @@ tm.Util = {
         var formBlock = $('<div></div>');
         formBlock.addClass('hidden');
         formBlock.addClass('task-form');
-        formBlock.attr('id', 'add-task-from')
+        formBlock.attr('id', 'add-task-form')
 
         var title = $('<input>');
         title.addClass('task-title');
@@ -133,6 +160,7 @@ tm.Util = {
         task.find('.edit-task-button').addClass('hidden');
         task.find('.save-task-button').removeClass('hidden');
         task.find('.cancel-task-button').removeClass('hidden');
+        task.find('.delete-task-button').removeClass('hidden');
     },
 
     saveTaskEdit: function (taskDOMElement) {
@@ -154,8 +182,9 @@ tm.Util = {
             taskLink
         );
 
-        tm.curTasksObject.updateTasksObject(taskObject);
+        tm.curTasksObject.updateTask(taskObject);
         tm.Util.unsetTaskEditMode(taskDOMElement);
+        tm.Util.rebuildPage();
     },
 
     cancelTaskEdit: function (taskDOMElement) {
@@ -172,6 +201,7 @@ tm.Util = {
         taskDOMElement.find('.edit-task-button').removeClass('hidden');
         taskDOMElement.find('.save-task-button').addClass('hidden');
         taskDOMElement.find('.cancel-task-button').addClass('hidden');
+        taskDOMElement.find('.delete-task-button').addClass('hidden');
 
         taskDOMElement.find('.task-title .title-text').replaceWith($(taskDOMel).find('.task-title .title-text'));
         taskDOMElement.find('.task-body').replaceWith($(taskDOMel).find('.task-body'));
@@ -255,6 +285,11 @@ tm.Util = {
         cancelBtn.addClass("hidden");
         cancelBtn.attr("taskId", taskObject.Id);
 
+        var delBtn = $("<div></div>");
+        delBtn.addClass("delete-task-button");
+        delBtn.addClass("hidden");
+        delBtn.attr("taskId", taskObject.Id);
+
         var editTaskBlock = $("<div></div>");
         editTaskBlock.addClass("edit-task-block");
 
@@ -279,6 +314,7 @@ tm.Util = {
         editBtn.html("edit");
         saveBtn.html("save");
         cancelBtn.html("cancel");
+        delBtn.html("delete");
 
         taskBody.html(taskObject.taskBody);
         taskFullText.html(taskObject.taskFullText);
@@ -289,6 +325,7 @@ tm.Util = {
         editTaskBlock.append(editBtn);
         editTaskBlock.append(saveBtn);
         editTaskBlock.append(cancelBtn);
+        editTaskBlock.append(delBtn);
         dueDate.after(editTaskBlock);
         taskElement.append(taskTitle);
         taskElement.append(taskBody);
@@ -349,10 +386,13 @@ tm.Util = {
     $('.save-task-button').on('click', function(e){
         tm.Util.saveBtnClick($(this));
     });
+    $('.delete-task-button').on('click', function(e){
+        tm.Util.delBtnClick($(this));
+    });
     $('#add-task-btn').on('click', function(e){
         tm.Util.addTaskBtnClick($(this));
     });
-    $('#add-task-from').find('.save-new-task-button').on('click', function(e){
+    $('#add-task-form').find('.save-new-task-button').on('click', function(e){
         tm.Util.saveNewTaskBtnClick($(this), tm.curTasksObject);
     });
 
@@ -578,7 +618,6 @@ tm.TasksURL = function() {
         $.each(segments, function(key, value){
             if (value == "tags") {
                 curURL.tags.push(segments[key + 1]);
-                console.log(currentUrl.tags);
             }
             if (value == "dueDate") {
                 curURL.dates.dueDate = segments[key + 1];
@@ -619,16 +658,31 @@ tm.TasksFilter = function() {
     };
 }
 
-tm.Tasks = function(tasksFilterObject) {
+tm.Tasks = function(tasksFilterObject, localStorageName) {
     var tasksData = [];
     var tasksFilter = tasksFilterObject.getCurrentFilter();
+    var offlineMode = true;
+    var localStorage = localStorageName;
 
-    var loadTasks = function() {
-        // getting tasks from stub
-        tasksData = window.tasksDataStub;
-    }
+    this.loadTasks = function() {
+        if (offlineMode){
+            tasksData = store.get(localStorage);
+        }
+    };
 
-    loadTasks();
+    this.saveTasks = function(){
+        if (offlineMode){
+            this.saveTasksToLocalStorage();
+        }
+    };
+
+    this.setOfflineMode = function(mode){
+        offlineMode = mode;
+    };
+
+    this.getOfflineMode = function(){
+        return offlineMode;
+    };
 
     this.getTaskObjById = function(taskId){
         var obj = {};
@@ -639,7 +693,7 @@ tm.Tasks = function(tasksFilterObject) {
             }
         });
         return obj;
-    }
+    };
 
     this.newTaskObject = function(
         id, title, dueDate, tags, body, link
@@ -654,7 +708,7 @@ tm.Tasks = function(tasksFilterObject) {
         };
 
         return taskObject;
-    }
+    };
 
     this.applyTasksFilter = function () {
         var result = [];
@@ -679,35 +733,43 @@ tm.Tasks = function(tasksFilterObject) {
         } else result = tasksData;
 
         return result;
-    }
+    };
 
     this.get = function () {
         return this.applyTasksFilter();
-    }
+    };
 
     this.addTask = function (taskObject) {
         tasksData.push(taskObject);
+        this.saveTasks();
     };
 
     this.deleteTask = function (taskObjectId) {
-
+        $.each(tasksData, function(key, value){
+            if (value.Id == taskObjectId) {
+                tasksData.splice(key, 1);
+                return false;
+            }
+        });
+        this.saveTasks();
     };
 
-    this.updateTasksObject = function (taskObject) {
+    this.updateTask = function (taskObject) {
         $.each(tasksData, function(key, value){
             if (value.Id == taskObject.Id) {
                 tasksData[key] = taskObject;
                 return false;
             }
         });
+        this.saveTasks();
     };
 
-    this.saveTasksToLocalStorage = function (tasksObject, tasksObjectName) {
-        store.set(tasksObjectName, tasksObject);
+    this.saveTasksToLocalStorage = function () {
+        store.set(localStorage, tasksData);
     };
 
-    this.removeTasksFromLocalStorage = function(tasksObjectName) {
-        store.remove(tasksObjectName);
+    this.removeTasksFromLocalStorage = function() {
+        store.remove(localStorage);
     };
 
 
