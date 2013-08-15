@@ -1,0 +1,66 @@
+@media screen and (max-width: 320px) {
+
+    #left-panel {
+        display: none;
+    }
+
+    #center-panel {
+        padding-left: 1rem;
+        width: 95%;
+        min-width: 10rem;
+    }
+
+}
+
+@media screen and (min-width: 320px) and (max-width: 768px) {
+
+    #left-panel {
+        float: none;
+        clear: both;
+        width: 95%;
+    }
+        #left-panel .tag-name {
+        
+        }
+        #left-panel header {
+        display: none;
+        }
+        #left-panel .tag{
+            display: inline-block;
+            width: 7rem;
+        }
+            .tag-counter{
+                display: none;
+            }
+            #dates .tag{
+                border: 1px solid rgb(240, 124, 33);
+                margin-right: 0.2rem;
+            }
+            #tags .tag{
+                border: 1px solid rgb(33, 132, 240);
+                margin-right: 0.2rem;
+            }
+    
+    #center-panel {        
+	    width: 95%;
+	    min-width: 10rem;
+    }
+        #center-panel header {
+            display: none;
+        }
+
+}
+
+@media screen and (min-width: 768px) {
+
+    #left-panel {
+        width: 15%;
+        max-width: 12rem;
+    }
+
+    #center-panel {
+	    width: 80%;
+	    min-width: 10rem;
+    }
+
+}

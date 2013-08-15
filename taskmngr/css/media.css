@@ -1,0 +1,38 @@
+@media screen and (max-width: 768px) {
+
+    #left-panel {
+        display: block;
+        width: 90%;
+        clear: both;
+        float: none;
+    }
+
+    #left-panel li{
+        display: inline;
+    }
+
+    #center-panel {
+        padding-left: 1rem;
+        width: 90%;
+        min-width: 10rem;
+        clear: both;
+        float: none;
+    }
+
+}
+
+@media screen and (min-width: 768px) {
+
+    #left-panel {
+
+        width: 15%;
+        min-width: 10rem;
+    }
+
+    #center-panel {
+        padding-left: 1rem;
+        width: 80%;
+        min-width: 10rem;
+    }
+
+}
