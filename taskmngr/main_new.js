@@ -8,7 +8,19 @@ tm.init = function(){
     tm.Util.renderTodayHeader();
 
     $('#add-task-btn').after(tm.Util.renderTaskForm());
-
+    $('#add-task-btn').on('click', function(e){
+        e.stopPropagation();
+        tm.Util.addTaskBtnClick($(this));
+    });
+    $('#add-task-form').find('.save-new-task-button').on('click', function(e){
+        e.stopPropagation();
+        tm.Util.saveNewTaskBtnClick($(this), tm.curTasksObject);
+    });
+    $('#add-task-form').find('.cancel-new-task-button').on('click', function(e){
+        e.stopPropagation();
+        tm.Util.clearTaskForm($('#add-task-form'));
+        tm.Util.addTaskBtnClick($('#add-task-btn'));
+    });
 }
 
 tm.Util = {
@@ -101,8 +113,8 @@ tm.Util = {
 
     renderTaskForm: function(){
         var formBlock = $('<div></div>');
-        formBlock.addClass('hidden');
         formBlock.addClass('task-form');
+        formBlock.addClass('hidden');
         formBlock.attr('id', 'add-task-form')
 
         var title = $('<input>');
@@ -233,7 +245,7 @@ tm.Util = {
             $.each(tm.curTasksObject.get(), function (key, value) {
                 if (value.position) {
                     var position = new google.maps.LatLng(value.position.lat, value.position.long);
-                    var marker = new google.maps.Marker({ position: position, map: map, taskId: value.Id });
+                    var marker = new google.maps.Marker({ position: position, map: map, taskId: value.id });
 
                     google.maps.event.addListener(marker, "click", function (e) {
                         var infoWindow = new google.maps.InfoWindow({
@@ -273,22 +285,22 @@ tm.Util = {
 
         var editBtn = $("<div>");
         editBtn.addClass("edit-task-button");
-        editBtn.attr("taskId", taskObject.Id);
+        editBtn.attr("taskId", taskObject.id);
 
         var saveBtn = $("<div></div>");
         saveBtn.addClass("save-task-button");
         saveBtn.addClass("hidden");
-        saveBtn.attr("taskId", taskObject.Id);
+        saveBtn.attr("taskId", taskObject.id);
 
         var cancelBtn = $("<div></div>");
         cancelBtn.addClass("cancel-task-button");
         cancelBtn.addClass("hidden");
-        cancelBtn.attr("taskId", taskObject.Id);
+        cancelBtn.attr("taskId", taskObject.id);
 
         var delBtn = $("<div></div>");
         delBtn.addClass("delete-task-button");
         delBtn.addClass("hidden");
-        delBtn.attr("taskId", taskObject.Id);
+        delBtn.attr("taskId", taskObject.id);
 
         var editTaskBlock = $("<div></div>");
         editTaskBlock.addClass("edit-task-block");
@@ -303,7 +315,7 @@ tm.Util = {
 
         taskElement.attr("tags", taskObject.tags + '');
 
-        taskElement.attr("Id", taskObject.Id);
+        taskElement.attr("id", taskObject.id);
 
         taskTitle.attr("link", taskLink);
 
@@ -389,13 +401,6 @@ tm.Util = {
     $('.delete-task-button').on('click', function(e){
         tm.Util.delBtnClick($(this));
     });
-    $('#add-task-btn').on('click', function(e){
-        tm.Util.addTaskBtnClick($(this));
-    });
-    $('#add-task-form').find('.save-new-task-button').on('click', function(e){
-        tm.Util.saveNewTaskBtnClick($(this), tm.curTasksObject);
-    });
-
 }
 
 }
@@ -688,7 +693,7 @@ tm.Tasks = function(tasksFilterObject, localStorageName) {
         var obj = {};
 
         $.each(tasksData, function(key, data){
-            if (data.Id == taskId){
+            if (data.id == taskId){
                 obj = data;
             }
         });
@@ -699,7 +704,7 @@ tm.Tasks = function(tasksFilterObject, localStorageName) {
         id, title, dueDate, tags, body, link
         ){
         var taskObject = {
-            Id: id,
+            id: id,
             title: title,
             dueDate: dueDate,
             tags: tags,
@@ -746,7 +751,7 @@ tm.Tasks = function(tasksFilterObject, localStorageName) {
 
     this.deleteTask = function (taskObjectId) {
         $.each(tasksData, function(key, value){
-            if (value.Id == taskObjectId) {
+            if (value.id == taskObjectId) {
                 tasksData.splice(key, 1);
                 return false;
             }
@@ -756,7 +761,7 @@ tm.Tasks = function(tasksFilterObject, localStorageName) {
 
     this.updateTask = function (taskObject) {
         $.each(tasksData, function(key, value){
-            if (value.Id == taskObject.Id) {
+            if (value.id == taskObject.id) {
                 tasksData[key] = taskObject;
                 return false;
             }

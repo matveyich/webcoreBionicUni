@@ -1,6 +1,6 @@
 var tasksDataStub = [
     {
-        Id: 1,
+        id: 1,
         title: "Строка управления",
         dueDate: "08.24.2013",
         tags: ["Important", "Finished"],
@@ -8,7 +8,7 @@ var tasksDataStub = [
         link: "http://google.com/?q=typeahead"
     },
     {
-        Id: 2,
+        id: 2,
         title: "CTI-панель",
         dueDate: "08.4.2013",
         tags: ["In-progress"],
@@ -17,7 +17,7 @@ var tasksDataStub = [
         position: {lat: 50, long: 30}
     },
     {
-        Id: 3,
+        id: 3,
         title: "Интеграция с Google analytics",
         dueDate: "08.14.2013",
         tags: ["Finished"],
@@ -26,7 +26,7 @@ var tasksDataStub = [
         position: { lat: 51, long: 31 }
     },
     {
-        Id: 4,
+        id: 4,
         title: "Facebook integration",
         dueDate: "08.21.2013",
         tags: ["Important"],
@@ -34,7 +34,7 @@ var tasksDataStub = [
         link: "http://google.com/?q=facebook integration"
     },
     {
-        Id: 5,
+        id: 5,
         title: "Подготовить отчет",
         dueDate: "08.13.2013",
         tags: ["Not-started"],
@@ -43,6 +43,6 @@ var tasksDataStub = [
     }
 ];
 
-if (store.get('tm.tasks' == undefined)) {
+if (store.get('tm.tasks') == undefined) {
     store.set('tm.tasks', tasksDataStub);
 }
