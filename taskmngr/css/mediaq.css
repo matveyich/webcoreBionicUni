@@ -10,6 +10,14 @@
         min-width: 10rem;
     }
 
+        .adding-new-task-mode {
+            display: none;
+        }
+
+        .editing-another-task-mode {
+            display: none;
+        }
+
 }
 
 @media screen and (min-width: 320px) and (max-width: 768px) {
@@ -25,9 +33,11 @@
         #left-panel header {
         display: none;
         }
-        #left-panel .tag{
-            display: inline-block;
+        #left-panel #dates .tag{
             width: 7rem;
+        }
+        #left-panel #tags .tag{
+            width: 6rem;
         }
             .tag-counter{
                 display: none;
@@ -36,11 +46,14 @@
                 border: 1px solid rgb(240, 124, 33);
                 margin-right: 0.2rem;
             }
+                #dates-today {
+                    display: none;
+                }
             #tags .tag{
                 border: 1px solid rgb(33, 132, 240);
                 margin-right: 0.2rem;
             }
-    
+
     #center-panel {        
 	    width: 95%;
 	    min-width: 10rem;
@@ -48,7 +61,13 @@
         #center-panel header {
             display: none;
         }
+        .adding-new-task-mode {
+            display: none;
+        }
 
+        .editing-another-task-mode {
+            display: none;
+        }
 }
 
 @media screen and (min-width: 768px) {

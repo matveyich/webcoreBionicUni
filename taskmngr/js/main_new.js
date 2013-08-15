@@ -19,7 +19,7 @@ tm.init = function(){
     $('#add-task-form').find('.cancel-new-task-button').on('click', function(e){
         e.stopPropagation();
         tm.Util.clearTaskForm($('#add-task-form'));
-        tm.Util.addTaskBtnClick($('#add-task-btn'));
+        $('#add-task-btn').trigger('click');
     });
 }
 
@@ -85,7 +85,7 @@ tm.Util = {
 
     addTaskBtnClick: function(addBtn){
         $('#add-task-form').toggleClass('hidden');
-
+        $('#tasks').toggleClass('adding-new-task-mode');
     },
 
     saveNewTaskBtnClick: function(saveBtn, tasksObject) {
@@ -158,6 +158,7 @@ tm.Util = {
 
         var task = taskDOMElement;
         task.addClass('editing');
+        task.siblings().addClass('editing-another-task-mode');
 
         var taskTitle = task.find('.task-title .title-text');
         var taskBody = task.find('.task-body');
@@ -206,6 +207,7 @@ tm.Util = {
     unsetTaskEditMode: function (taskDOMElement) {
 
         taskDOMElement.removeClass('editing');
+        taskDOMElement.siblings().removeClass('editing-another-task-mode');
         var taskId = taskDOMElement.attr('id');
         var taskObj = tm.curTasksObject.getTaskObjById(taskId);
         var taskDOMel = tm.Util.renderOneTaskDOMElement(taskObj);
