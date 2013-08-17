@@ -1,6 +1,8 @@
 ﻿var tm = {};
 
 tm.init = function(){
+    tm.Util.renderModeSwitcher();
+
     tm.Util.rebuildPage();
 
     tm.tagsMenu = new tm.TagsMenu(tm.curURLObject);
@@ -32,7 +34,7 @@ tm.Util = {
 
         tm.Util.activateURL(tm.curFilterObject, tm.curURLObject);
 
-        tm.curTasksObject = new tm.Tasks(tm.curFilterObject, 'tm.tasks');
+        tm.curTasksObject = new tm.Tasks(tm.curFilterObject, 'tm.tasks', tm.Util.isOfflineMode());
         tm.curTasksObject.loadTasks();
 
         tm.Util.renderTasksDOMElement(tm.curTasksObject);
@@ -262,30 +264,60 @@ tm.Util = {
             }
     },
 
+    renderModeSwitcher: function (){
+        var switcher = $('#mode-switcher');
 
+        switcher.addClass('offline-mode');
+
+        switcher.on('click', function(e){
+            $(this).toggleClass('offline-mode');
+            $(this).find('.offline').toggleClass('hidden');
+            $(this).find('.online').toggleClass('hidden');
+
+            tm.Util.rebuildPage();
+        });
+
+        var offlineMode = $('<div></div>');
+        offlineMode.addClass('offline');
+        offlineMode.html('Offline');
+        offlineMode.addClass('tag');
+
+        var onlineMode = $('<div></div>');
+        onlineMode.addClass('online');
+        onlineMode.addClass('hidden');
+        onlineMode.addClass('tag');
+        onlineMode.html('Online');
+
+        switcher.append(offlineMode);
+        switcher.append(onlineMode);
+    },
+
+    isOfflineMode: function(){
+        return $('#mode-switcher').hasClass('offline-mode');
+    },
 
     renderOneTaskDOMElement: function (taskObject) {
         // template generation
 
-        var taskElement = $("<div>");
+        var taskElement = $("<div></div>");
         taskElement.addClass("task row");
 
-        var taskTitle = $("<span>") ;
+        var taskTitle = $("<div></div>") ;
         taskTitle.addClass("task-title");
 
         var titleText = $('<span></span>');
         titleText.addClass("title-text");
 
-        var dueDate = $("<span>") ;
+        var dueDate = $("<span></span>") ;
         dueDate.addClass("due-date");
 
-        var taskBody = $("<span>");
+        var taskBody = $("<div></div>");
         taskBody.addClass("task-body");
 
-        var taskFullText = $("<span>");
+        var taskFullText = $("<div></div>");
         taskFullText.addClass("task-fulltext");
 
-        var editBtn = $("<div>");
+        var editBtn = $("<div></div>");
         editBtn.addClass("edit-task-button");
         editBtn.attr("taskId", taskObject.id);
 
@@ -311,7 +343,7 @@ tm.Util = {
 
         var taskLink = taskObject.link;
 
-        var taskTags = $("<span>");
+        var taskTags = $("<div></div>");
         taskTags.addClass("task-tags");
         taskTags.html(taskObject.tags + '');
 
@@ -340,10 +372,11 @@ tm.Util = {
         editTaskBlock.append(saveBtn);
         editTaskBlock.append(cancelBtn);
         editTaskBlock.append(delBtn);
-        dueDate.after(editTaskBlock);
+
         taskElement.append(taskTitle);
         taskElement.append(taskBody);
         taskBody.after(taskTags);
+        taskTags.after(editTaskBlock);
 
         return taskElement;
     },
@@ -665,21 +698,33 @@ tm.TasksFilter = function() {
     };
 }
 
-tm.Tasks = function(tasksFilterObject, localStorageName) {
+tm.DataSource = function(realSource){
+    var src = realSource;
+
+    this.getData = function(){
+        return src.getData();
+    };
+
+    this.saveData = function(data) {
+        src.saveData(data);
+    }
+}
+
+tm.Tasks = function(tasksFilterObject, localStorageName, offlineMode) {
     var tasksData = [];
     var tasksFilter = tasksFilterObject.getCurrentFilter();
-    var offlineMode = true;
     var localStorage = localStorageName;
 
     this.loadTasks = function() {
-        if (offlineMode){
-            tasksData = store.get(localStorage);
-        }
+        //if (offlineMode){
+            tasksData = this.getTasksFromLocalStorage();
+        //} else tasksData = this.getTasksFromWS();
     };
 
     this.saveTasks = function(){
-        if (offlineMode){
-            this.saveTasksToLocalStorage();
+        this.saveTasksToLocalStorage();
+        if (offlineMode == false){
+            this.saveTasksToWS();
         }
     };
 
@@ -779,5 +824,19 @@ tm.Tasks = function(tasksFilterObject, localStorageName) {
         store.remove(localStorage);
     };
 
+    this.getTasksFromLocalStorage = function(){
+        return store.get(localStorage);
+    };
 
+    this.saveTasksToWS = function() {
+        this.saveTasksToLocalStorage();
+    };
+
+    this.removeTasksFromWS = function() {
+        this.removeTasksFromLocalStorage();
+    };
+
+    this.getTasksFromWS = function() {
+        return this.getTasksFromLocalStorage();
+    };
 }
