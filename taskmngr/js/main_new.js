@@ -97,7 +97,7 @@ tm.Util = {
             title: newTaskForm.find('[name=task-title]').val(),
             dueDate: newTaskForm.find('[name=task-due-date]').val(),
             tags: [newTaskForm.find('[name=task-tags]').val()],
-            body: newTaskForm.find('[name=task-body]').val(),
+            taskBody: newTaskForm.find('[name=task-body]').val(),
             link: ''
         };
         tm.Util.clearTaskForm(newTaskForm);
@@ -128,12 +128,22 @@ tm.Util = {
         dueDate.addClass('task-due-date');
         dueDate.attr('name', 'task-due-date');
         dueDate.attr('type', 'text');
-
+        dueDate.datepicker({
+            inline: true,
+            dateFormat: 'mm.dd.yy'
+        });
         var body = $('<textarea></textarea>');
         body.addClass('task-body');
         body.attr('name' ,'task-body');
 
-        var tags = $('<input>');
+        var selectTags = '<select name=task-tags>' +
+            '<option>Important</option>' +
+            '<option>In-progress</option>' +
+            '<option>Finished</option>' +
+            '<option>Not-started</option>' +
+            '</select>';
+
+        var tags = $(selectTags);
         tags.addClass('task-tags');
         tags.attr('name', 'task-tags');
         tags.attr('type', 'text');
@@ -163,19 +173,36 @@ tm.Util = {
         task.siblings().addClass('editing-another-task-mode');
 
         var taskTitle = task.find('.task-title .title-text');
+        taskTitle.addClass('row');
         var taskBody = task.find('.task-body');
+        taskBody.addClass('row');
         var taskTags = task.find('.task-tags');
+        taskTags.addClass('row');
         var taskDueDate = task.find('.task-title .due-date');
+        taskDueDate.addClass('row');
 
-        taskTitle.html('<input type="text" value="' + taskTitle.html() + '" name="task-title" class="title-text">');
-        taskDueDate.html('<input type="text" value="' + taskDueDate.html() + '" name="task-due-date" class="title-text">');
-        taskTags.html('<input type="text" value="' + taskTags.html() + '" name="task-tags" class="title-text">');
+        taskTitle.html('Title: <input type="text" value="' + taskTitle.html() + '" name="task-title" class="title-text">');
+        taskDueDate.html('Due date: <input type="text" value="' + taskDueDate.html() + '" name="task-due-date" class="title-text">');
+
+        var selectTags = 'Tag: <select name=task-tags>' +
+            '<option>Important</option>' +
+            '<option>In-progress</option>' +
+            '<option>Finished</option>' +
+            '<option>Not-started</option>' +
+            '</select>';
+
+        taskTags.html(selectTags);
         taskBody.html('<textarea name="task-body" class="task-body">' + taskBody.html() + '</textarea>');
 
         task.find('.edit-task-button').addClass('hidden');
         task.find('.save-task-button').removeClass('hidden');
         task.find('.cancel-task-button').removeClass('hidden');
         task.find('.delete-task-button').removeClass('hidden');
+
+        taskDueDate.find( "[name=task-due-date]" ).datepicker({
+            inline: true,
+            dateFormat: 'mm.dd.yy'
+        });
     },
 
     saveTaskEdit: function (taskDOMElement) {
@@ -219,10 +246,10 @@ tm.Util = {
         taskDOMElement.find('.cancel-task-button').addClass('hidden');
         taskDOMElement.find('.delete-task-button').addClass('hidden');
 
-        taskDOMElement.find('.task-title .title-text').replaceWith($(taskDOMel).find('.task-title .title-text'));
-        taskDOMElement.find('.task-body').replaceWith($(taskDOMel).find('.task-body'));
-        taskDOMElement.find('.task-tags').replaceWith($(taskDOMel).find('.task-tags'));
-        taskDOMElement.find('.task-title .due-date').replaceWith($(taskDOMel).find('.task-title .due-date'));
+        taskDOMElement.find('.task-title .title-text').replaceWith($(taskDOMel).find('.task-title .title-text')).removeClass('row');
+        taskDOMElement.find('.task-body').replaceWith($(taskDOMel).find('.task-body')).removeClass('row');
+        taskDOMElement.find('.task-tags').replaceWith($(taskDOMel).find('.task-tags')).removeClass('row');
+        taskDOMElement.find('.task-title .due-date').replaceWith($(taskDOMel).find('.task-title .due-date')).removeClass('row');
     },
 
     updateTasksDOM: function () {
@@ -829,7 +856,15 @@ tm.Tasks = function(tasksFilterObject, localStorageName, offlineMode) {
     };
 
     this.saveTasksToWS = function() {
-        this.saveTasksToLocalStorage();
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/",
+            data: tm.curTasksObject.get(),
+            dataType: "json",
+            success: function( data ) {
+                alert('synched with ws');
+            }
+        });
     };
 
     this.removeTasksFromWS = function() {

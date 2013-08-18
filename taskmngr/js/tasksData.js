@@ -3,7 +3,7 @@ var tasksDataStub = [
         id: 1,
         title: "Строка управления",
         dueDate: "08.24.2013",
-        tags: ["Important", "Finished"],
+        tags: ["Important"],
         taskBody: "Рассмотреть use cases работы элемента в контексте бизнес процессов.",
         link: "http://google.com/?q=typeahead"
     },
